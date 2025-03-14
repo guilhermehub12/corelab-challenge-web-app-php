@@ -1,0 +1,63 @@
+// Mixins para responsividade
+@mixin respond-above($breakpoint) {
+    @if $breakpoint == xs {
+      @media (min-width: $breakpoint-xs) { @content; }
+    } @else if $breakpoint == sm {
+      @media (min-width: $breakpoint-sm) { @content; }
+    } @else if $breakpoint == md {
+      @media (min-width: $breakpoint-md) { @content; }
+    } @else if $breakpoint == lg {
+      @media (min-width: $breakpoint-lg) { @content; }
+    } @else if $breakpoint == xl {
+      @media (min-width: $breakpoint-xl) { @content; }
+    }
+  }
+  
+  // layout flexível
+  @mixin flex($direction: row, $justify: flex-start, $align: stretch, $wrap: nowrap) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+    flex-wrap: $wrap;
+  }
+  
+  // grid responsivo de notas
+  @mixin tasks-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+    
+    @include respond-above(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @include respond-above(md) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    @include respond-above(lg) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
+    @include respond-above(xl) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  
+  // truncar texto com elipsis
+  @mixin text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  // shadow de cartões
+  @mixin card-shadow {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: box-shadow 0.3s ease-in-out;
+    
+    &:hover {
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    }
+  }

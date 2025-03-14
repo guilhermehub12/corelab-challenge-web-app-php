@@ -1,0 +1,48 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html, body {
+    height: 100%;
+    width: 100%;
+    font-family: $font-family-base;
+    font-size: 16px;
+    line-height: 1.5;
+    color: $color-black;
+    background-color: $color-light-grey;
+    
+    @include respond-above(md) {
+      font-size: 18px;
+    }
+  }
+  
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+  
+  input, button, textarea, select {
+    font: inherit;
+  }
+  
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  ul, ol {
+    list-style: none;
+  }
+  
+  :root {
+    // Cria as variáveis CSS a partir das cores SASS
+    @each $name, $color in $task-colors {
+      --color-#{$name}: #{$color};
+    }
+  }
