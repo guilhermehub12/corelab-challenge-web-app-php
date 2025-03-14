@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+
+// Cores (baseadas no design dos mockups)
+$color-white: #FFFFFF;
+$color-light-grey: #F5F5F5;
+$color-black: #000000;
+$color-primary: #4285F4; // Azul padrão
+$color-yellow: #FFCA28;
+$color-green: #0F9D58;
+$color-red: #FF5252;
+$color-purple: #9C27B0;
+$color-orange: #FF7043;
+$color-cyan: #00BCD4;
+$color-pink: #E91E63;
+$color-teal: #26A69A;
+$color-grey: #757575;
+
+// Paleta de cores para notas (como visto nos mockups)
+$note-colors: (
+  white: $color-white,
+  blue: $color-primary,
+  yellow: $color-yellow,
+  green: $color-green,
+  red: $color-red,
+  purple: $color-purple,
+  orange: $color-orange,
+  cyan: $color-cyan,
+  pink: $color-pink,
+  teal: $color-teal,
+  grey: $color-grey
+);
+
+// Tipografia
+$font-family-base: 'Montserrat', sans-serif;
+$font-size-base: 1rem;
+$font-size-sm: 0.875rem;
+$font-size-lg: 1.25rem;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+// Breakpoints
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+
+// Shadow
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+// Border radius
+$border-radius-sm: 0.25rem;
+$border-radius-md: 0.5rem;
+$border-radius-lg: 1rem;
+$border-radius-full: 9999px;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-modal: 2000;
+$z-index-tooltip: 3000;
