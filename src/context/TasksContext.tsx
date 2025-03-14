@@ -1,43 +1,61 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Task, TaskColor } from '../types/api';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { Task, TaskColor, ApiError } from '../types/api';
 import { tasksService } from '../services/tasks.service';
 
-interface TasksContextType {
+interface TasksContextState {
   tasks: Task[];
   favorites: Task[];
   colors: TaskColor[];
   loading: boolean;
-  error: string | null;
+  error: ApiError | null;
   totalPages: number;
   currentPage: number;
-  fetchTasks: (page?: number) => Promise<void>;
-  fetchFavorites: () => Promise<void>;
-  createTask: (title: string, content: string, colorId?: number) => Promise<void>;
-  updateTask: (id: number, title?: string, content?: string, colorId?: number) => Promise<void>;
-  deleteTask: (id: number) => Promise<void>;
-  toggleFavorite: (id: number) => Promise<void>;
-  changeColor: (id: number, colorId: number) => Promise<void>;
 }
+
+interface TasksContextActions {
+  fetchTasks: (page?: number, search?: string) => Promise<void>;
+  fetchFavorites: () => Promise<void>;
+  createTask: (title: string, content: string, colorId?: number) => Promise<Task>;
+  updateTask: (id: number, title?: string, content?: string, colorId?: number) => Promise<Task>;
+  deleteTask: (id: number) => Promise<void>;
+  toggleFavorite: (id: number) => Promise<boolean>;
+  changeColor: (id: number, colorId: number) => Promise<Task>;
+  clearError: () => void;
+  refreshTasks: () => Promise<void>;
+}
+
+type TasksContextType = TasksContextState & TasksContextActions;
 
 const TasksContext = createContext<TasksContextType | undefined>(undefined);
 
 export const TasksProvider = ({ children }: { children: ReactNode }) => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [favorites, setFavorites] = useState<Task[]>([]);
-  const [colors, setColors] = useState<TaskColor[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [state, setState] = useState<TasksContextState>({
+    tasks: [],
+    favorites: [],
+    colors: [],
+    loading: true,
+    error: null,
+    totalPages: 1,
+    currentPage: 1
+  });
+
+  // Funções utilitárias para atualizar o estado imutavelmente
+  const setStateValue = <K extends keyof TasksContextState>(key: K, value: TasksContextState[K]) => {
+    setState(prev => ({ ...prev, [key]: value }));
+  };
+
+  const clearError = useCallback(() => {
+    setStateValue('error', null);
+  }, []);
 
   // Carregar cores disponíveis
   useEffect(() => {
     const loadColors = async () => {
       try {
         const { data } = await tasksService.getColors();
-        setColors(data);
+        setStateValue('colors', data);
       } catch (err) {
         console.error('Error loading colors:', err);
       }
@@ -46,148 +64,160 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
     loadColors();
   }, []);
 
-  // Carregar notas
-  const fetchTasks = async (page = 1) => {
-    setLoading(true);
-    setError(null);
+  // Carregar tasks
+  const fetchTasks = useCallback(async (page = 1, search?: string) => {
+    setStateValue('loading', true);
+    clearError();
     try {
-      const response = await tasksService.getAllTasks(page);
-      setTasks(response.data);
-      setTotalPages(response.meta.last_page);
-      setCurrentPage(response.meta.current_page);
+      const response = await tasksService.getAllTasks(page, 10, search);
+      setStateValue('tasks', response.data);
+      setStateValue('totalPages', response.meta.last_page);
+      setStateValue('currentPage', response.meta.current_page);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao carregar notas');
+      setStateValue('error', err);
     } finally {
-      setLoading(false);
+      setStateValue('loading', false);
     }
-  };
+  }, [clearError]);
+
+  // Recarregar tasks atuais
+  const refreshTasks = useCallback(async () => {
+    return fetchTasks(state.currentPage);
+  }, [fetchTasks, state.currentPage]);
 
   // Carregar favoritos
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     try {
       const response = await tasksService.getFavorites();
-      setFavorites(response.data);
+      setStateValue('favorites', response.data);
     } catch (err) {
       console.error('Error loading favorites:', err);
     }
-  };
+  }, []);
 
-  // Criar nota
-  const createTask = async (title: string, content: string, colorId?: number) => {
-    setLoading(true);
+  // Criar task
+  const createTask = useCallback(async (title: string, content: string, colorId?: number): Promise<Task> => {
+    setStateValue('loading', true);
+    clearError();
     try {
-      await tasksService.createTask({ title, content, color_id: colorId });
-      // Recarregar notas após criar
-      await fetchTasks(currentPage);
-      if (favorites.length > 0) {
+      const response = await tasksService.createTask({ title, content, color_id: colorId });
+      // Recarregar tasks após criar
+      await refreshTasks();
+      if (state.favorites.length > 0) {
         await fetchFavorites();
       }
+      return response.data;
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao criar nota');
+      setStateValue('error', err);
       throw err;
     } finally {
-      setLoading(false);
+      setStateValue('loading', false);
     }
-  };
+  }, [clearError, fetchFavorites, refreshTasks, state.favorites.length]);
 
-  // Atualizar nota
-  const updateTask = async (id: number, title?: string, content?: string, colorId?: number) => {
-    setLoading(true);
+  // Atualizar task
+  const updateTask = useCallback(async (id: number, title?: string, content?: string, colorId?: number): Promise<Task> => {
+    setStateValue('loading', true);
+    clearError();
     try {
-      await tasksService.updateTask(id, { title, content, color_id: colorId });
-      // Atualizar estados
-      setTasks(tasks.map(task => 
-        task.id === id 
-          ? { ...task, title: title || task.title, content: content || task.content, color_id: colorId || task.color_id } 
-          : task
+      const response = await tasksService.updateTask(id, { title, content, color_id: colorId });
+      
+      // Atualizar o estado localmente para evitar nova requisição
+      setStateValue('tasks', state.tasks.map(task => 
+        task.id === id ? response.data : task
       ));
-      setFavorites(favorites.map(task => 
-        task.id === id 
-          ? { ...task, title: title || task.title, content: content || task.content, color_id: colorId || task.color_id } 
-          : task
+      
+      setStateValue('favorites', state.favorites.map(task => 
+        task.id === id ? response.data : task
       ));
+      
+      return response.data;
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao atualizar nota');
+      setStateValue('error', err);
       throw err;
     } finally {
-      setLoading(false);
+      setStateValue('loading', false);
     }
-  };
+  }, [clearError, state.favorites, state.tasks]);
 
-  // Excluir nota
-  const deleteTask = async (id: number) => {
-    setLoading(true);
+  // Excluir task
+  const deleteTask = useCallback(async (id: number): Promise<void> => {
+    setStateValue('loading', true);
+    clearError();
     try {
       await tasksService.deleteTask(id);
       // Atualizar estados
-      setTasks(tasks.filter(task => task.id !== id));
-      setFavorites(favorites.filter(task => task.id !== id));
+      setStateValue('tasks', state.tasks.filter(task => task.id !== id));
+      setStateValue('favorites', state.favorites.filter(task => task.id !== id));
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao excluir nota');
+      setStateValue('error', err);
       throw err;
     } finally {
-      setLoading(false);
+      setStateValue('loading', false);
     }
-  };
+  }, [clearError, state.favorites, state.tasks]);
 
   // Alternar favorito
-  const toggleFavorite = async (id: number) => {
+  const toggleFavorite = useCallback(async (id: number): Promise<boolean> => {
     try {
       const { data } = await tasksService.toggleFavorite(id);
       
-      // Atualizar o estado da nota nos arrays
-      setTasks(tasks.map(task => 
+      // Atualizar o estado da task nos arrays
+      setStateValue('tasks', state.tasks.map(task => 
         task.id === id ? { ...task, is_favorite: data.is_favorite } : task
       ));
       
       // Se tornou favorito, adiciona aos favoritos
       if (data.is_favorite) {
-        const taskToAdd = tasks.find(task => task.id === id);
-        if (taskToAdd && !favorites.some(task => task.id === id)) {
-          setFavorites([...favorites, { ...taskToAdd, is_favorite: true }]);
+        const taskToAdd = state.tasks.find(task => task.id === id);
+        if (taskToAdd && !state.favorites.some(task => task.id === id)) {
+          setStateValue('favorites', [...state.favorites, { ...taskToAdd, is_favorite: true }]);
         }
       } else {
         // Se deixou de ser favorito, remove dos favoritos
-        setFavorites(favorites.filter(task => task.id !== id));
+        setStateValue('favorites', state.favorites.filter(task => task.id !== id));
       }
+      
+      return data.is_favorite;
     } catch (err) {
       console.error('Error toggling favorite:', err);
+      return false;
     }
-  };
+  }, [state.favorites, state.tasks]);
 
-  // Mudar cor da nota
-  const changeColor = async (id: number, colorId: number) => {
+  // Mudar cor da task
+  const changeColor = useCallback(async (id: number, colorId: number): Promise<Task> => {
     try {
       const { data } = await tasksService.changeColor(id, colorId);
       
       // Atualizar estado
-      setTasks(tasks.map(task => 
-        task.id === id ? { ...task, color_id: colorId, color: data.color } : task
+      setStateValue('tasks', state.tasks.map(task => 
+        task.id === id ? data : task
       ));
-      setFavorites(favorites.map(task => 
-        task.id === id ? { ...task, color_id: colorId, color: data.color } : task
+      
+      setStateValue('favorites', state.favorites.map(task => 
+        task.id === id ? data : task
       ));
+      
+      return data;
     } catch (err) {
       console.error('Error changing color:', err);
+      throw err;
     }
-  };
+  }, [state.favorites, state.tasks]);
 
   return (
     <TasksContext.Provider value={{
-      tasks,
-      favorites,
-      colors,
-      loading,
-      error,
-      totalPages,
-      currentPage,
+      ...state,
       fetchTasks,
       fetchFavorites,
       createTask,
       updateTask,
       deleteTask,
       toggleFavorite,
-      changeColor
+      changeColor,
+      clearError,
+      refreshTasks
     }}>
       {children}
     </TasksContext.Provider>
@@ -197,7 +227,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
 export const useTasks = () => {
   const context = useContext(TasksContext);
   if (context === undefined) {
-    throw new Error('useTasks must be used within a TasksProvider');
+    throw new Error('useTasks deve ser usado dentro de um TasksProvider');
   }
   return context;
 };

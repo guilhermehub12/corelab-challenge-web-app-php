@@ -77,3 +77,10 @@ export interface User {
     content?: string;
     color_id?: number;
   }
+
+  // Erros
+export interface ApiError {
+  message: string;
+  errors?: Record<string, string[]>;
+  status?: number;
+}

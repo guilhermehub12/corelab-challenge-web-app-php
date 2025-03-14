@@ -1,5 +1,8 @@
 import { Montserrat } from 'next/font/google';
 import type { Metadata } from 'next';
+import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from '../context/AuthContext';
+import { TasksProvider } from '../context/TasksContext';
 import '../styles/globals.scss';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
@@ -17,7 +20,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={montserrat.className}>
-        {children}
+        <AuthProvider>
+          <TasksProvider>
+            {children}
+            <Toaster />
+          </TasksProvider>
+        </AuthProvider>
       </body>
     </html>
   );
