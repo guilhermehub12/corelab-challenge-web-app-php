@@ -1,0 +1,137 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.container {
+  position: relative;
+  display: inline-block;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: $border-radius-md;
+  color: var(--text-primary);
+  font-size: $font-size-sm;
+  cursor: pointer;
+  transition: background-color $transition-fast, border-color $transition-fast;
+  
+  &:hover {
+    background-color: var(--background-secondary);
+  }
+  
+  svg {
+    margin-right: $spacing-xs;
+  }
+}
+
+.colorIndicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: $spacing-xs;
+  border: 1px solid rgba(var(--text-primary-rgb), 0.1);
+}
+
+.clearButton {
+  margin-left: $spacing-sm;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--background-secondary);
+  font-size: 10px;
+  
+  &:hover {
+    background-color: rgba(var(--text-primary-rgb), 0.1);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  min-width: 240px;
+  margin-top: $spacing-xs;
+  background-color: var(--background);
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-lg;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  
+  &.dark {
+    background-color: $color-grey-800;
+    border-color: $color-grey-700;
+  }
+}
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  border-bottom: 1px solid var(--border);
+  font-weight: $font-weight-medium;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: $font-size-lg;
+  line-height: 1;
+  padding: 0;
+  
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $spacing-sm;
+  padding: $spacing-md;
+}
+
+.colorOption {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform $transition-fast, border-color $transition-fast;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  &.selected {
+    border-color: var(--text-primary);
+    transform: scale(1.1);
+  }
+}
+
+.clearFilterButton {
+  display: block;
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  text-align: center;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  color: $color-primary;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  
+  &:hover {
+    background-color: rgba($color-primary, 0.05);
+  }
+}

@@ -1,0 +1,51 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: $spacing-lg 0;
+  gap: $spacing-xs;
+}
+
+.pageButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 $spacing-sm;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: $border-radius-md;
+  color: var(--text-primary);
+  font-size: $font-size-sm;
+  cursor: pointer;
+  transition: background-color $transition-fast, color $transition-fast, border-color $transition-fast;
+  
+  &:hover:not(:disabled) {
+    background-color: var(--background-secondary);
+    border-color: rgba(var(--text-primary-rgb), 0.2);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  &.active {
+    background-color: $color-primary;
+    color: $color-white;
+    border-color: $color-primary;
+    
+    &:hover {
+      background-color: darken($color-primary, 10%);
+    }
+  }
+}
+
+.pageNumbers {
+  display: flex;
+  gap: $spacing-xs;
+}
