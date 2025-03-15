@@ -1,0 +1,139 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.container {
+  position: fixed;
+  top: $spacing-lg;
+  right: $spacing-lg;
+  z-index: $z-index-toast;
+  max-width: 350px;
+  width: calc(100% - #{$spacing-lg * 2});
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  @include respond-above(md) {
+    max-width: 400px;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-md;
+  background-color: var(--background);
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-lg;
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid;
+
+  // Haptic feedback on mobile
+  @media (hover: none) {
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+.icon {
+  margin-right: $spacing-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  flex: 1;
+  margin-right: $spacing-md;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  opacity: 0.7;
+  padding: 0;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: left;
+  animation: progress linear forwards;
+
+  &.paused {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+// Toast types
+.success {
+  border-left-color: $color-success;
+  
+  .icon {
+    color: $color-success;
+  }
+  
+  .progressBar {
+    background-color: $color-success;
+  }
+}
+
+.error {
+  border-left-color: $color-danger;
+  
+  .icon {
+    color: $color-danger;
+  }
+  
+  .progressBar {
+    background-color: $color-danger;
+  }
+}
+
+.warning {
+  border-left-color: $color-warning;
+  
+  .icon {
+    color: darken($color-warning, 15%);
+  }
+  
+  .progressBar {
+    background-color: $color-warning;
+  }
+}
+
+.info {
+  border-left-color: $color-info;
+  
+  .icon {
+    color: $color-info;
+  }
+  
+  .progressBar {
+    background-color: $color-info;
+  }
+}

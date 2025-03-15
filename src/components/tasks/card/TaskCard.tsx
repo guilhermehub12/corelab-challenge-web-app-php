@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Task } from '@/types/api';
 import { formatDate } from '@/utils/dateUtils';
 import styles from './TaskCard.module.scss';
@@ -12,7 +12,7 @@ interface TaskCardProps {
   onToggleFavorite: (taskId: number) => void;
 }
 
-export const TaskCard = ({ 
+export const TaskCardComponent  = ({ 
   task, 
   onEdit, 
   onDelete, 
@@ -87,6 +87,18 @@ export const TaskCard = ({
     </div>
   );
 };
+
+// Memoização do componente para evitar re-renderizações desnecessárias
+export const TaskCard = memo(TaskCardComponent, (prevProps, nextProps) => {
+  // Comparação profunda para determinar se o componente deve re-renderizar
+  return (
+    prevProps.task.id === nextProps.task.id &&
+    prevProps.task.title === nextProps.task.title &&
+    prevProps.task.content === nextProps.task.content &&
+    prevProps.task.color_id === nextProps.task.color_id &&
+    prevProps.task.is_favorite === nextProps.task.is_favorite
+  );
+});
 
 // Icon components
 const StarIcon = ({ filled }: { filled: boolean }) => (

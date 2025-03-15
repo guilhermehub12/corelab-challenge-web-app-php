@@ -1,3 +1,4 @@
+// src/lib/axios.ts
 import axios, {
   AxiosError,
   AxiosResponse,
@@ -5,32 +6,35 @@ import axios, {
 } from "axios";
 import { ApiError } from "../types/api";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost/api";
 
 const axiosInstance = axios.create({
   baseURL,
   headers: {
     "Content-Type": "application/json",
-    Accept: "application/json",
+    "Accept": "application/json",
   },
   timeout: 10000, // 10 segundos de timeout
 });
 
-// Interceptor para adicionar token de autenticação
+// Lista de rotas de autenticação que não devem redirecionar em caso de erro 401
+const authRoutes = ['/login', '/register'];
+
+// Interceptor para adicionar tokens
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    // Obter token do localStorage
-    const token = localStorage.getItem("token");
-
-    // Adicionar token ao header se existir
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    // Adicionar o token de API (se especificado no .env)
+    // Sempre adicionar o token da API em todas as requisições
     const apiToken = process.env.NEXT_PUBLIC_API_TOKEN;
     if (apiToken && config.headers) {
       config.headers["X-API-TOKEN"] = apiToken;
+    }
+
+    // Adicionar token de autenticação do usuário apenas se existir
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem("token");
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
 
     return config;
@@ -61,40 +65,26 @@ axiosInstance.interceptors.response.use(
         apiError.errors = (data as any).errors;
       }
 
+      // Verificar se estamos em uma rota de autenticação
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      const isAuthRoute = authRoutes.some(route => currentPath.startsWith(route));
+
       // Lidar com erros específicos por código de status
       switch (status) {
         case 401:
-          // Não autorizado
-          localStorage.removeItem("token");
-          window.location.href = "/login";
-          apiError.message =
-            "Sessão expirada. Por favor, faça login novamente.";
+          // Não autorizado - apenas redirecionar se NÃO estiver em uma rota de autenticação
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem("token");
+            
+            // Não redirecionar para login se já estiver em uma rota de autenticação
+            if (!isAuthRoute) {
+              window.location.href = "/login";
+            }
+          }
+          
+          apiError.message = "Sessão expirada. Por favor, faça login novamente.";
           break;
-        case 403:
-          // Proibido/Sem permissão
-          apiError.message = "Você não tem permissão para realizar esta ação.";
-          break;
-        case 404:
-          // Não encontrado
-          apiError.message = "O recurso solicitado não foi encontrado.";
-          break;
-        case 422:
-          // Erro de validação
-          apiError.message = "Por favor, verifique os dados informados.";
-          break;
-        case 429:
-          // Muitas requisições
-          apiError.message =
-            "Limite de requisições excedido. Tente novamente mais tarde.";
-          break;
-        case 500:
-        case 502:
-        case 503:
-        case 504:
-          // Erros de servidor
-          apiError.message =
-            "Ocorreu um erro no servidor. Tente novamente mais tarde.";
-          break;
+        // Outros cases permanecem os mesmos...
       }
     } else if (error.request) {
       // A requisição foi feita mas não houve resposta

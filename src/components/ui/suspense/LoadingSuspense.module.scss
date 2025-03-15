@@ -1,0 +1,102 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.loading {
+  width: 100%;
+  padding: $spacing-xl;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: $font-size-lg;
+  color: var(--text-secondary);
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+  
+  @include respond-above(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @include respond-above(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  background-color: var(--background);
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-md;
+}
+
+.formHeader {
+  margin-bottom: $spacing-lg;
+}
+
+.skeletonTitle {
+  height: 30px;
+  width: 60%;
+  background-color: var(--background-secondary);
+  border-radius: $border-radius-md;
+}
+
+.skeletonSubtitle {
+  height: 20px;
+  width: 80%;
+  margin-top: $spacing-sm;
+  background-color: var(--background-secondary);
+  border-radius: $border-radius-md;
+}
+
+.formBody {
+  margin-bottom: $spacing-lg;
+}
+
+.formField {
+  margin-bottom: $spacing-md;
+}
+
+.skeletonLabel {
+  height: 16px;
+  width: 30%;
+  margin-bottom: $spacing-xs;
+  background-color: var(--background-secondary);
+  border-radius: $border-radius-md;
+}
+
+.skeletonInput {
+  height: 40px;
+  width: 100%;
+  background-color: var(--background-secondary);
+  border-radius: $border-radius-md;
+}
+
+.formFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.skeletonButton {
+  height: 36px;
+  width: 100px;
+  background-color: var(--background-secondary);
+  border-radius: $border-radius-md;
+}
+
+.page {
+  width: 100%;
+}
+
+.pageHeader {
+  margin-bottom: $spacing-xl;
+}
+
+.pageContent {
+  width: 100%;
+}

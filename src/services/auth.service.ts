@@ -8,7 +8,7 @@ interface LoginResponse {
 
 export class AuthService extends ApiService {
   constructor() {
-    super('/auth');
+    super('');
   }
 
   async login(credentials: LoginRequest): Promise<LoginResponse> {

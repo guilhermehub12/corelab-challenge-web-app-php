@@ -1,4 +1,5 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode, useCallback } from 'react';
+import { useTactileFeedback } from '@/hooks/useTactileFeedback';
 import styles from './Button.module.scss';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'success' | 'outline';
@@ -12,6 +13,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  disableTactileFeedback?: boolean;
 }
 
 export const Button = ({
@@ -24,8 +26,22 @@ export const Button = ({
   rightIcon,
   className = '',
   disabled,
+  onClick,
+  disableTactileFeedback = false,
   ...rest
 }: ButtonProps) => {
+  const { vibrateOnClick, isSupported } = useTactileFeedback();
+
+  const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    // Adicionar feedback tátil se suportado
+    if (isSupported && !disableTactileFeedback) {
+      vibrateOnClick();
+    }
+
+    // Chamar o handler original
+    onClick?.(e);
+  }, [onClick, isSupported, disableTactileFeedback, vibrateOnClick]);
+
   return (
     <button
       className={`
@@ -37,6 +53,7 @@ export const Button = ({
         ${className}
       `}
       disabled={isLoading || disabled}
+      onClick={handleClick}
       {...rest}
     >
       {isLoading && <span className={styles.spinner} />}
