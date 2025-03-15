@@ -1,0 +1,23 @@
+@import '../../styles/abstracts/variables';
+@import '../../styles/abstracts/mixins';
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.content {
+  flex: 1;
+  padding: $spacing-lg 0;
+  
+  @include respond-above(md) {
+    padding: $spacing-xl 0;
+  }
+}

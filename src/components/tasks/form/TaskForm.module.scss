@@ -1,0 +1,73 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.form {
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+  
+  h2 {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+  }
+}
+
+.colorPickerContainer {
+  margin-left: $spacing-md;
+}
+
+.formGroup {
+  margin-bottom: $spacing-md;
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+  font-weight: $font-weight-medium;
+}
+
+.error {
+  color: $color-red;
+  font-size: $font-size-sm;
+  font-weight: normal;
+}
+
+.textarea {
+  width: 100%;
+  padding: $spacing-md;
+  border: 1px solid rgba($color-black, 0.2);
+  border-radius: $border-radius-md;
+  font-family: inherit;
+  font-size: $font-size-base;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba($color-primary, 0.1);
+  }
+  
+  &.hasError {
+    border-color: $color-red;
+    
+    &:focus {
+      box-shadow: 0 0 0 2px rgba($color-red, 0.1);
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+}

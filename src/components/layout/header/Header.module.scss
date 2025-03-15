@@ -1,0 +1,123 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: $color-white;
+  padding: $spacing-md;
+  transition: box-shadow 0.3s ease;
+  
+  &.scrolled {
+    box-shadow: $shadow-md;
+  }
+}
+
+.headerContent {
+  @include flex(row, space-between, center);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.leftSection {
+  @include flex(row, flex-start, center);
+  flex: 1;
+}
+
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: $spacing-md;
+  
+  @include respond-above(xs) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: $border-radius-full;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: rgba($color-black, 0.05);
+    }
+  }
+}
+
+.menuIcon {
+  position: relative;
+  width: 18px;
+  height: 2px;
+  background-color: $color-black;
+  
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 2px;
+    background-color: $color-black;
+    transition: transform 0.3s;
+  }
+  
+  &::before {
+    transform: translateY(-6px);
+  }
+  
+  &::after {
+    transform: translateY(6px);
+  }
+}
+
+.logo {
+  h1 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+    margin: 0;
+  }
+}
+
+.searchForm {
+  flex: 2;
+  max-width: 400px;
+  margin: 0 $spacing-lg;
+  
+  @include respond-above(xs) {
+    display: flex;
+  }
+  
+  @include respond-above(md) {
+    flex: 1;
+    max-width: 500px;
+  }
+}
+
+.rightSection {
+  @include flex(row, flex-end, center);
+  flex: 1;
+}
+
+.userInfo {
+  display: none;
+  flex-direction: column;
+  margin-right: $spacing-md;
+  text-align: right;
+  
+  @include respond-above(sm) {
+    display: flex;
+  }
+}
+
+.userName {
+  font-weight: $font-weight-medium;
+  font-size: $font-size-base;
+}
+
+.userRole {
+  font-size: $font-size-sm;
+  color: rgba($color-black, 0.6);
+}
