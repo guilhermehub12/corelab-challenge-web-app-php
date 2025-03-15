@@ -1,16 +1,20 @@
+// ============================================
+// SISTEMA DE CORES
+// ============================================
+
 // Cores
-$color-white: #FFFFFF;
-$color-light-grey: #F5F5F5;
+$color-white: #ffffff;
+$color-light-grey: #f5f5f5;
 $color-black: #000000;
-$color-primary: #4285F4; // Azul padrão
-$color-yellow: #FFCA28;
-$color-green: #0F9D58;
-$color-red: #FF5252;
-$color-purple: #9C27B0;
-$color-orange: #FF7043;
-$color-cyan: #00BCD4;
-$color-pink: #E91E63;
-$color-teal: #26A69A;
+$color-primary: #4285f4; // Azul padrão
+$color-yellow: #ffca28;
+$color-green: #0f9d58;
+$color-red: #ff5252;
+$color-purple: #9c27b0;
+$color-orange: #ff7043;
+$color-cyan: #00bcd4;
+$color-pink: #e91e63;
+$color-teal: #26a69a;
 $color-grey: #757575;
 
 // Paleta de cores para tarefas
@@ -25,44 +29,202 @@ $task-colors: (
   cyan: $color-cyan,
   pink: $color-pink,
   teal: $color-teal,
-  grey: $color-grey
+  grey: $color-grey,
 );
 
-// Tipografia
-$font-family-base: 'Montserrat', sans-serif;
-$font-size-base: 1rem;
-$font-size-sm: 0.875rem;
-$font-size-lg: 1.25rem;
+// Cores base
+$color-light-grey: #f5f5f5;
+$color-grey-100: #f0f0f0;
+$color-grey-200: #e1e1e1;
+$color-grey-300: #cccccc;
+$color-grey-400: #b3b3b3;
+$color-grey-500: #999999;
+$color-grey-600: #757575;
+$color-grey-700: #5c5c5c;
+$color-grey-800: #383838;
+$color-grey-900: #1f1f1f;
+
+// Cores primárias
+$color-primary: #4285f4;
+$color-primary-light: lighten($color-primary, 15%);
+$color-primary-dark: darken($color-primary, 15%);
+
+// Cores de status
+$color-success: #0f9d58;
+$color-success-light: lighten($color-success, 15%);
+$color-success-dark: darken($color-success, 15%);
+
+$color-warning: #ffca28;
+$color-warning-light: lighten($color-warning, 15%);
+$color-warning-dark: darken($color-warning, 15%);
+
+$color-danger: #ff5252;
+$color-danger-light: lighten($color-danger, 15%);
+$color-danger-dark: darken($color-danger, 15%);
+
+$color-info: #00bcd4;
+$color-info-light: lighten($color-info, 15%);
+$color-info-dark: darken($color-info, 15%);
+
+// Cores para tarefas
+$task-colors: (
+  white: $color-white,
+  blue: $color-primary,
+  yellow: $color-warning,
+  green: $color-success,
+  red: $color-danger,
+  purple: #9c27b0,
+  orange: #ff7043,
+  cyan: $color-info,
+  pink: #e91e63,
+  teal: #26a69a,
+  grey: $color-grey-600,
+);
+
+// ============================================
+// TIPOGRAFIA
+// ============================================
+
+// Família de fontes
+$font-family-base: "Montserrat", sans-serif;
+$font-family-heading: $font-family-base;
+$font-family-mono: "Roboto Mono", monospace;
+
+// Tamanhos de fonte
+$font-size-xs: 0.75rem; // 12px
+$font-size-sm: 0.875rem; // 14px
+$font-size-base: 1rem; // 16px
+$font-size-md: 1.125rem; // 18px
+$font-size-lg: 1.25rem; // 20px
+$font-size-xl: 1.5rem; // 24px
+$font-size-2xl: 1.875rem; // 30px
+$font-size-3xl: 2.25rem; // 36px
+$font-size-4xl: 3rem; // 48px
+
+// Pesos de fonte
+$font-weight-light: 300;
 $font-weight-normal: 400;
 $font-weight-medium: 500;
+$font-weight-semibold: 600;
 $font-weight-bold: 700;
 
-// Breakpoints
+// Alturas de linha
+$line-height-tight: 1.1;
+$line-height-base: 1.5;
+$line-height-loose: 1.8;
+
+// ============================================
+// ESPAÇAMENTO
+// ============================================
+
+$spacing-base: 0.25rem; // 4px base
+
+$spacing-xs: $spacing-base; // 4px
+$spacing-sm: $spacing-base * 2; // 8px
+$spacing-md: $spacing-base * 4; // 16px
+$spacing-lg: $spacing-base * 6; // 24px
+$spacing-xl: $spacing-base * 8; // 32px
+$spacing-2xl: $spacing-base * 12; // 48px
+$spacing-3xl: $spacing-base * 16; // 64px
+$spacing-4xl: $spacing-base * 24; // 96px
+
+// Margens e Paddings - sistema 8pt
+$space-0: 0;
+$space-1: 0.5rem; // 8px
+$space-2: 1rem; // 16px
+$space-3: 1.5rem; // 24px
+$space-4: 2rem; // 32px
+$space-5: 2.5rem; // 40px
+$space-6: 3rem; // 48px
+$space-7: 3.5rem; // 56px
+$space-8: 4rem; // 64px
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
 $breakpoint-xs: 0;
 $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
 $breakpoint-xl: 1200px;
+$breakpoint-2xl: 1400px;
 
-// Spacing
-$spacing-xs: 0.25rem;
-$spacing-sm: 0.5rem;
-$spacing-md: 1rem;
-$spacing-lg: 1.5rem;
-$spacing-xl: 2rem;
+// ============================================
+// ELEVAÇÃO E SOMBRAS
+// ============================================
 
-// Shadow
-$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+$shadow-sm: 0 1px 2px rgba($color-black, 0.05);
+$shadow-md: 0 4px 6px rgba($color-black, 0.1);
+$shadow-lg: 0 10px 15px rgba($color-black, 0.1);
+$shadow-xl: 0 20px 25px rgba($color-black, 0.15);
+$shadow-inner: inset 0 2px 4px rgba($color-black, 0.05);
 
-// Border radius
-$border-radius-sm: 0.25rem;
-$border-radius-md: 0.5rem;
-$border-radius-lg: 1rem;
+// ============================================
+// BORDAS E ARREDONDAMENTOS
+// ============================================
+
+$border-width-thin: 1px;
+$border-width-medium: 2px;
+$border-width-thick: 4px;
+
+$border-radius-sm: 0.25rem; // 4px
+$border-radius-md: 0.5rem; // 8px
+$border-radius-lg: 0.75rem; // 12px
+$border-radius-xl: 1rem; // 16px
+$border-radius-2xl: 1.5rem; // 24px
+$border-radius-pill: 9999px;
 $border-radius-full: 9999px;
 
-// Z-index
+// ============================================
+// TRANSIÇÕES
+// ============================================
+
+$transition-fast: 0.15s ease;
+$transition-base: 0.3s ease;
+$transition-slow: 0.5s ease;
+
+// ============================================
+// Z-INDEX
+// ============================================
+
 $z-index-dropdown: 1000;
-$z-index-modal: 2000;
-$z-index-tooltip: 3000;
+$z-index-sticky: 1010;
+$z-index-fixed: 1020;
+$z-index-modal-backdrop: 1030;
+$z-index-modal: 1040;
+$z-index-popover: 1050;
+$z-index-tooltip: 1060;
+$z-index-toast: 1070;
+
+// ============================================
+// LAYOUT
+// ============================================
+
+$header-height: 60px;
+$sidebar-width: 270px;
+$container-max-width: 1200px;
+
+// ============================================
+// TEMAS (Claro/Escuro)
+// ============================================
+
+// Cores de tema claro (padrão)
+$light-theme: (
+  background: $color-white,
+  background-secondary: $color-light-grey,
+  text-primary: $color-black,
+  text-secondary: $color-grey-600,
+  border: $color-grey-200,
+  shadow: rgba($color-black, 0.1),
+);
+
+// Cores de tema escuro
+$dark-theme: (
+  background: $color-grey-900,
+  background-secondary: $color-grey-800,
+  text-primary: $color-white,
+  text-secondary: $color-grey-400,
+  border: $color-grey-700,
+  shadow: rgba($color-black, 0.3),
+);

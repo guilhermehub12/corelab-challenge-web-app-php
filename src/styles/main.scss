@@ -2,9 +2,14 @@
 @import 'abstracts/variables';
 @import 'abstracts/mixins';
 @import 'abstracts/functions';
+@import 'abstracts/theme';
 
 // Base
-@import 'base/reset';
+@import 'base/normalize';
 @import 'base/typography';
+@import 'base/animations';
 
-// Componentes
+// Utilidades
+@import 'utilities/spacing';
+@import 'utilities/display';
+@import 'utilities/text';

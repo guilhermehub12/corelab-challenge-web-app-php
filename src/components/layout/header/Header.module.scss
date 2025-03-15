@@ -1,23 +1,23 @@
-@import '../../../styles/abstracts/variables';
-@import '../../../styles/abstracts/mixins';
+@import "../../../styles/abstracts/variables";
+@import "../../../styles/abstracts/mixins";
 
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
   width: 100%;
-  background-color: $color-white;
+  background-color: var(--background);
   padding: $spacing-md;
-  transition: box-shadow 0.3s ease;
-  
+  transition: box-shadow $transition-base;
+
   &.scrolled {
-    box-shadow: $shadow-md;
+    box-shadow: 0 2px 8px var(--shadow);
   }
 }
 
 .headerContent {
   @include flex(row, space-between, center);
-  max-width: 1200px;
+  max-width: $container-max-width;
   margin: 0 auto;
 }
 
@@ -27,48 +27,45 @@
 }
 
 .menuButton {
-  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
   background: none;
   border: none;
   cursor: pointer;
   margin-right: $spacing-md;
-  
-  @include respond-above(xs) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: $border-radius-full;
-    transition: background-color 0.2s;
-    
-    &:hover {
-      background-color: rgba($color-black, 0.05);
-    }
-  }
-}
+  border-radius: $border-radius-pill;
+  transition: background-color $transition-base;
 
-.menuIcon {
-  position: relative;
-  width: 18px;
-  height: 2px;
-  background-color: $color-black;
-  
-  &::before, &::after {
-    content: '';
-    position: absolute;
+  &:hover {
+    background-color: rgba(var(--text-primary-rgb), 0.05);
+  }
+
+  .menuIcon {
+    position: relative;
     width: 18px;
     height: 2px;
-    background-color: $color-black;
-    transition: transform 0.3s;
-  }
-  
-  &::before {
-    transform: translateY(-6px);
-  }
-  
-  &::after {
-    transform: translateY(6px);
+    background-color: var(--text-primary);
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 2px;
+      background-color: var(--text-primary);
+      transition: transform $transition-base;
+    }
+
+    &::before {
+      transform: translateY(-6px);
+    }
+
+    &::after {
+      transform: translateY(6px);
+    }
   }
 }
 
@@ -85,20 +82,21 @@
   flex: 2;
   max-width: 400px;
   margin: 0 $spacing-lg;
-  
-  @include respond-above(xs) {
-    display: flex;
-  }
-  
+
   @include respond-above(md) {
     flex: 1;
     max-width: 500px;
+  }
+
+  @include respond-above(xs) {
+    display: flex;
   }
 }
 
 .rightSection {
   @include flex(row, flex-end, center);
   flex: 1;
+  gap: $spacing-sm;
 }
 
 .userInfo {
@@ -106,18 +104,20 @@
   flex-direction: column;
   margin-right: $spacing-md;
   text-align: right;
-  
+
   @include respond-above(sm) {
     display: flex;
   }
 }
 
 .userName {
+  display: flex;
+  align-items: center;
   font-weight: $font-weight-medium;
   font-size: $font-size-base;
+  color: var(--text-primary);
 }
 
-.userRole {
-  font-size: $font-size-sm;
-  color: rgba($color-black, 0.6);
+.userBadge {
+  margin-left: $spacing-xs;
 }

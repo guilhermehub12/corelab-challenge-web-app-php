@@ -1,0 +1,68 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-medium;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: $border-radius-md;
+  padding: 0.2em 0.6em;
+  font-size: 75%;
+  line-height: 1;
+}
+
+// Variantes
+.primary {
+  background-color: $color-primary;
+  color: $color-white;
+}
+
+.secondary {
+  background-color: $color-grey-600;
+  color: $color-white;
+}
+
+.success {
+  background-color: $color-success;
+  color: $color-white;
+}
+
+.warning {
+  background-color: $color-warning;
+  color: $color-grey-900;
+}
+
+.danger {
+  background-color: $color-danger;
+  color: $color-white;
+}
+
+.info {
+  background-color: $color-info;
+  color: $color-white;
+}
+
+// Tamanhos
+.sm {
+  font-size: 65%;
+  padding: 0.15em 0.5em;
+}
+
+.md {
+  font-size: 75%;
+  padding: 0.2em 0.6em;
+}
+
+.lg {
+  font-size: 85%;
+  padding: 0.25em 0.7em;
+}
+
+// Arredondado
+.rounded {
+  border-radius: $border-radius-pill;
+}

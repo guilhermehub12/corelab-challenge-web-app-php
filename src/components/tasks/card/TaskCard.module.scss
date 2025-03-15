@@ -5,16 +5,30 @@
   position: relative;
   border-radius: $border-radius-lg;
   padding: $spacing-md;
-  background-color: $color-white;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: var(--task-color-white, $color-white);
+  transition: transform $transition-base, box-shadow $transition-base;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: $shadow-md;
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: $shadow-md;
+    box-shadow: $shadow-lg;
+  }
+  
+  // Temas escuros para cores claras
+  [data-theme="dark"] & {
+    &[style*="rgb(255, 255, 255)"] {
+      background-color: $color-grey-800 !important;
+      color: $color-white;
+    }
+    
+    // Ajustar contraste para cores claras
+    &[style*="rgb(255, 202, 40)"] {
+      color: $color-black;
+    }
   }
 }
 

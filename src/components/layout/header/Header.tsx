@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useUI } from '@/context/UIContext';
+import { ThemeSwitch } from '@/components/ui/switch/ThemeSwitch';
 import { Button } from '@/components/ui/button/Button';
 import { Input } from '@/components/ui/input/Input';
+import { Badge } from '@/components/ui/badge/Badge';
 import { useNotification } from '@/hooks/useNotification';
 import styles from './Header.module.scss';
 
@@ -17,6 +20,7 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isScrolled, setIsScrolled] = useState(false);
     const { user, logout } = useAuth();
+    const { toggleSidebar } = useUI();
     const router = useRouter();
     const notification = useNotification();
 
@@ -41,7 +45,6 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
             notification.success('Logout realizado com sucesso');
             router.push('/login');
         } catch (error) {
-            console.error('Erro ao fazer logout', error);
             notification.error('Erro ao fazer logout');
         }
     };
@@ -52,7 +55,10 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
                 <div className={styles.leftSection}>
                     <button
                         className={styles.menuButton}
-                        onClick={onToggleSidebar}
+                        onClick={() => {
+                            toggleSidebar();
+                            onToggleSidebar();
+                        }}
                         aria-label="Toggle menu"
                     >
                         <span className={styles.menuIcon}></span>
@@ -74,9 +80,22 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
                 </form>
 
                 <div className={styles.rightSection}>
+                    <ThemeSwitch />
+
                     <div className={styles.userInfo}>
-                        <span className={styles.userName}>{user?.name}</span>
-                        <span className={styles.userRole}>{formatUserRole(user?.profile)}</span>
+                        <div className={styles.userName}>
+                            {user?.name}
+                            {user?.profile && (
+                                <Badge
+                                    variant={getUserProfileBadgeVariant(user?.profile)}
+                                    size="sm"
+                                    rounded
+                                    className={styles.userBadge}
+                                >
+                                    {formatUserRole(user?.profile)}
+                                </Badge>
+                            )}
+                        </div>
                     </div>
 
                     <Button
@@ -92,7 +111,7 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
     );
 };
 
-// Helper functions and components
+// Funções e componentes auxiliares
 const SearchIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8"></circle>
@@ -100,14 +119,23 @@ const SearchIcon = () => (
     </svg>
 );
 
-const formatUserRole = (role?: string): string => {
-    if (!role) return '';
-
+const formatUserRole = (profile?: string): string => {
+    if (!profile) return '';
     const roles: Record<string, string> = {
-        admin: 'Administrador',
+        admin: 'Admin',
         manager: 'Gerente',
         member: 'Membro'
     };
+    return roles[profile] || profile;
+};
 
-    return roles[role] || role;
+
+const getUserProfileBadgeVariant = (profile?: string): 'primary' | 'success' | 'info' => {
+    if (!profile) return 'info';
+    const variants: Record<string, 'primary' | 'success' | 'info'> = {
+        admin: 'primary',
+        manager: 'success',
+        member: 'info'
+    };
+    return variants[profile] || 'info';
 };

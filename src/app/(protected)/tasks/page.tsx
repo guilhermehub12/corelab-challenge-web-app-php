@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { SkeletonCard } from '@/components/ui/skeleton/Skeleton';
-import TasksPageContent from './TasksPageContent';
 import styles from './TasksPage.module.scss';
+import TasksPageContent from './TasksPageContent';
 
 export default function TasksPage() {
   return (

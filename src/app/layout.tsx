@@ -15,15 +15,6 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'CoreTasks - Organize suas tarefas',
   description: 'Aplicativo para organização de tarefas',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
-    { media: '(prefers-color-scheme: dark)', color: '#1F1F1F' },
-  ],
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -36,6 +27,17 @@ export const metadata: Metadata = {
   applicationName: 'CoreTasks',
   keywords: ['tarefas', 'organização', 'produtividade', 'notas'],
 };
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
+export const themeColor = [
+  { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
+  { media: '(prefers-color-scheme: dark)', color: '#1F1F1F' },
+];
 
 // Definição de headers para cache e performance
 export const headers = () => {

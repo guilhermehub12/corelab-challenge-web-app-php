@@ -1,0 +1,84 @@
+@import 'main.scss';
+
+// Estilos globais
+.global-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(var(--background-rgb), 0.8);
+  z-index: 9999;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.global-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(var(--text-primary-rgb), 0.2);
+  border-radius: 50%;
+  border-top-color: $color-primary;
+  animation: spin 1s linear infinite;
+  margin-bottom: $spacing-md;
+}
+
+// Tema escuro - Ajustes específicos
+[data-theme="dark"] {
+  // Ajustar card das tarefas
+  .task-card {
+    border: 1px solid rgba($color-white, 0.1);
+    
+    &--white {
+      background-color: $color-grey-800;
+      color: $color-white;
+    }
+  }
+  
+  // Ajustar inputs e componentes de formulário
+  input, textarea, select {
+    background-color: $color-grey-800;
+    border-color: $color-grey-700;
+    color: $color-white;
+    
+    &::placeholder {
+      color: $color-grey-500;
+    }
+  }
+  
+  // Ajustar botões outline
+  .button--outline {
+    border-color: $color-grey-600;
+    color: $color-grey-300;
+    
+    &:hover {
+      background-color: rgba($color-white, 0.1);
+    }
+  }
+  
+  // Ajustar skeletons
+  .skeleton {
+    background-color: $color-grey-700;
+    
+    &.wave::after {
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba($color-grey-600, 0.3),
+        transparent
+      );
+    }
+  }
+}
+
+// Responsividade
+html {
+  // Ajustar tamanho de fonte base em telas menores
+  @media (max-width: $breakpoint-sm) {
+    font-size: 14px;
+  }
+}

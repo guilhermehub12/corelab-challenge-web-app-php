@@ -1,0 +1,95 @@
+@import "../../../styles/abstracts/variables";
+@import "../../../styles/abstracts/mixins";
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-md;
+  border-radius: $border-radius-md;
+  position: relative;
+  margin-bottom: $spacing-md;
+  border-left: 4px solid transparent;
+}
+
+.icon {
+  margin-right: $spacing-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  flex: 1;
+}
+
+.title {
+  margin-top: 0;
+  margin-bottom: $spacing-xs;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+}
+
+.message {
+  margin: 0;
+  font-size: $font-size-sm;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  padding: $spacing-xs;
+  margin: -$spacing-xs;
+  border-radius: $border-radius-sm;
+
+  &:hover {
+    opacity: 1;
+    background-color: rgba($color-black, 0.05);
+  }
+}
+
+// Variantes
+.success {
+  background-color: rgba($color-success, 0.1);
+  border-left-color: $color-success;
+  color: darken($color-success, 20%);
+
+  .title {
+    color: darken($color-success, 20%);
+  }
+}
+
+.warning {
+  background-color: rgba($color-warning, 0.1);
+  border-left-color: $color-warning;
+  color: darken($color-warning, 25%);
+
+  .title {
+    color: darken($color-warning, 25%);
+  }
+}
+
+.danger {
+  background-color: rgba($color-danger, 0.1);
+  border-left-color: $color-danger;
+  color: darken($color-danger, 15%);
+
+  .title {
+    color: darken($color-danger, 15%);
+  }
+}
+
+.info {
+  background-color: rgba($color-info, 0.1);
+  border-left-color: $color-info;
+  color: darken($color-info, 20%);
+
+  .title {
+    color: darken($color-info, 20%);
+  }
+}
