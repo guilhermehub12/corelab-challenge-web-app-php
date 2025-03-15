@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback } from 'react';
 import { Task } from '@/types/api';
 import { TaskCard } from '@/components/tasks/card/TaskCard';
 import { TaskForm } from '@/components/tasks/form/TaskForm';
 import { useTasks } from '@/context/TasksContext';
 import { useNotification } from '@/hooks/useNotification';
+import { useModal } from '@/hooks/useModal';
 import { Modal } from '@/components/ui/modal/Modal';
 import styles from './TaskGrid.module.scss';
+import { useUIState } from '@/hooks/useUIState';
 
 interface TaskGridProps {
   tasks: Task[];
@@ -23,57 +25,62 @@ export const TaskGrid = ({
   const { colors, createTask, updateTask, deleteTask, toggleFavorite, changeColor } = useTasks();
   const notification = useNotification();
   
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Modais usando o hook useModal
+  const createModal = useModal();
+  const editModal = useModal();
+  const deleteModal = useModal();
+  
+  // Estado de loading
+  const { state: uiState, updateState } = useUIState({
+    isSubmitting: false,
+    selectedTask: null as Task | null
+  });
 
   // Handlers para manipulação de tarefas
-  const handleCreateTask = async (title: string, content: string, colorId: number) => {
-    setIsSubmitting(true);
+  const handleCreateTask = useCallback(async (title: string, content: string, colorId: number) => {
+    updateState({ isSubmitting: true });
     try {
       await createTask(title, content, colorId);
       notification.success('Tarefa criada com sucesso!');
-      setIsCreateModalOpen(false);
+      createModal.close();
     } catch (error) {
       notification.error('Erro ao criar tarefa.');
     } finally {
-      setIsSubmitting(false);
+      updateState({ isSubmitting: false });
     }
-  };
+  }, [createTask, notification, createModal, updateState]);
 
-  const handleEditTask = async (title: string, content: string, colorId: number) => {
-    if (!selectedTask) return;
+  const handleEditTask = useCallback(async (title: string, content: string, colorId: number) => {
+    if (!uiState.selectedTask) return;
     
-    setIsSubmitting(true);
+    updateState({ isSubmitting: true });
     try {
-      await updateTask(selectedTask.id, title, content, colorId);
+      await updateTask(uiState.selectedTask.id, title, content, colorId);
       notification.success('Tarefa atualizada com sucesso!');
-      setIsEditModalOpen(false);
+      editModal.close();
     } catch (error) {
       notification.error('Erro ao atualizar tarefa.');
     } finally {
-      setIsSubmitting(false);
+      updateState({ isSubmitting: false });
     }
-  };
+  }, [uiState.selectedTask, updateTask, notification, editModal, updateState]);
 
-  const handleDeleteTask = async () => {
-    if (!selectedTask) return;
+  const handleDeleteTask = useCallback(async () => {
+    if (!uiState.selectedTask) return;
     
-    setIsSubmitting(true);
+    updateState({ isSubmitting: true });
     try {
-      await deleteTask(selectedTask.id);
+      await deleteTask(uiState.selectedTask.id);
       notification.success('Tarefa excluída com sucesso!');
-      setIsDeleteModalOpen(false);
+      deleteModal.close();
     } catch (error) {
       notification.error('Erro ao excluir tarefa.');
     } finally {
-      setIsSubmitting(false);
+      updateState({ isSubmitting: false });
     }
-  };
+  }, [uiState.selectedTask, deleteTask, notification, deleteModal, updateState]);
 
-  const handleToggleFavorite = async (taskId: number) => {
+  const handleToggleFavorite = useCallback(async (taskId: number) => {
     try {
       const result = await toggleFavorite(taskId);
       notification.success(
@@ -84,15 +91,28 @@ export const TaskGrid = ({
     } catch (error) {
       notification.error('Erro ao atualizar favoritos.');
     }
-  };
+  }, [toggleFavorite, notification]);
 
-  const handleColorChange = async (taskId: number, colorId: number) => {
+  const handleColorChange = useCallback(async (taskId: number, colorId: number) => {
     try {
       await changeColor(taskId, colorId);
     } catch (error) {
       notification.error('Erro ao alterar a cor.');
     }
-  };
+  }, [changeColor, notification]);
+  
+  // Abrir modal de edição
+  const openEditModal = useCallback((task: Task) => {
+    updateState({ selectedTask: task });
+    editModal.open();
+  }, [editModal, updateState]);
+  
+  // Abrir modal de exclusão
+  const openDeleteModal = useCallback((taskId: number) => {
+    const task = tasks.find(t => t.id === taskId) || null;
+    updateState({ selectedTask: task });
+    deleteModal.open();
+  }, [tasks, deleteModal, updateState]);
 
   return (
     <div className={styles.container}>
@@ -102,7 +122,7 @@ export const TaskGrid = ({
         {showCreateButton && (
           <button 
             className={styles.createButton}
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={() => createModal.open()}
           >
             <PlusIcon /> Nova Tarefa
           </button>
@@ -120,7 +140,7 @@ export const TaskGrid = ({
           {showCreateButton && (
             <button 
               className={styles.createEmptyButton}
-              onClick={() => setIsCreateModalOpen(true)}
+              onClick={() => createModal.open()}
             >
               Criar Nova Tarefa
             </button>
@@ -132,14 +152,8 @@ export const TaskGrid = ({
             <div key={task.id} className={styles.gridItem}>
               <TaskCard
                 task={task}
-                onEdit={(task) => {
-                  setSelectedTask(task);
-                  setIsEditModalOpen(true);
-                }}
-                onDelete={(taskId) => {
-                  setSelectedTask(tasks.find(t => t.id === taskId) || null);
-                  setIsDeleteModalOpen(true);
-                }}
+                onEdit={openEditModal}
+                onDelete={(taskId) => openDeleteModal(taskId)}
                 onToggleFavorite={handleToggleFavorite}
                 onColorChange={handleColorChange}
               />
@@ -150,37 +164,37 @@ export const TaskGrid = ({
       
       {/* Modal de Criação */}
       <Modal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        isOpen={createModal.isOpen}
+        onClose={createModal.close}
       >
         <TaskForm
           colors={colors}
-          isLoading={isSubmitting}
+          isLoading={uiState.isSubmitting}
           onSubmit={handleCreateTask}
-          onCancel={() => setIsCreateModalOpen(false)}
+          onCancel={createModal.close}
         />
       </Modal>
       
       {/* Modal de Edição */}
       <Modal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        isOpen={editModal.isOpen}
+        onClose={editModal.close}
       >
-        {selectedTask && (
+        {uiState.selectedTask && (
           <TaskForm
-            task={selectedTask}
+            task={uiState.selectedTask}
             colors={colors}
-            isLoading={isSubmitting}
+            isLoading={uiState.isSubmitting}
             onSubmit={handleEditTask}
-            onCancel={() => setIsEditModalOpen(false)}
+            onCancel={editModal.close}
           />
         )}
       </Modal>
       
       {/* Modal de Confirmação de Exclusão */}
       <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.close}
       >
         <div className={styles.deleteConfirmation}>
           <h2>Excluir Tarefa</h2>
@@ -189,8 +203,8 @@ export const TaskGrid = ({
           <div className={styles.deleteActions}>
             <button 
               className={styles.cancelButton}
-              onClick={() => setIsDeleteModalOpen(false)}
-              disabled={isSubmitting}
+              onClick={deleteModal.close}
+              disabled={uiState.isSubmitting}
             >
               Cancelar
             </button>
@@ -198,9 +212,9 @@ export const TaskGrid = ({
             <button 
               className={styles.deleteButton}
               onClick={handleDeleteTask}
-              disabled={isSubmitting}
+              disabled={uiState.isSubmitting}
             >
-              {isSubmitting ? 'Excluindo...' : 'Excluir'}
+              {uiState.isSubmitting ? 'Excluindo...' : 'Excluir'}
             </button>
           </div>
         </div>

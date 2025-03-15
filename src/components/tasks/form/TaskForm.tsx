@@ -1,11 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Task, TaskColor } from '@/types/api';
 import { Button } from '@/components/ui/button/Button';
 import { Input } from '@/components/ui/input/Input';
 import { ColorPicker } from '@/components/ui/colorPicker/ColorPicker';
+import { useForm } from '@/hooks/useForm';
+import { useValidator } from '@/hooks/useValidator';
 import styles from './TaskForm.module.scss';
+
+interface TaskFormValues {
+  title: string;
+  content: string;
+  colorId: number;
+}
 
 interface TaskFormProps {
   task?: Task;
@@ -22,58 +30,62 @@ export const TaskForm = ({
   onSubmit,
   onCancel
 }: TaskFormProps) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [colorId, setColorId] = useState<number>(1); // Default color ID
-  const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
+  // Definir valor inicial para cor (azul padrão ou a primeira cor disponível)
+  const defaultColorId = colors.find(c => c.name === 'blue')?.id || colors[0]?.id || 1;
+  
+  // Validador para o formulário
+  const { createValidator } = useValidator();
+  const validator = createValidator<TaskFormValues>({
+    title: {
+      required: 'O título é obrigatório',
+      maxLength: { value: 100, message: 'O título não pode ter mais de 100 caracteres' }
+    },
+    content: {
+      required: 'O conteúdo é obrigatório',
+    },
+    colorId: {
+      validate: [
+        {
+          test: (value) => !!colors.find(c => c.id === value),
+          message: 'Selecione uma cor válida'
+        }
+      ]
+    }
+  });
 
-  // Preencher o formulário se houver uma task para edição
+  // Inicializar formulário
+  const form = useForm<TaskFormValues>({
+    initialValues: {
+      title: task?.title || '',
+      content: task?.content || '',
+      colorId: task?.color_id || defaultColorId,
+    },
+    validate: validator,
+    onSubmit: (values) => {
+      onSubmit(values.title, values.content, values.colorId);
+    }
+  });
+
+  // Atualizar formulário quando a task mudar
   useEffect(() => {
     if (task) {
-      setTitle(task.title);
-      setContent(task.content);
-      setColorId(task.color_id);
-    } else {
-      // Default color ID (blue) for new tasks
-      const defaultColor = colors.find(c => c.name === 'blue') || colors[0];
-      if (defaultColor) {
-        setColorId(defaultColor.id);
-      }
+      form.setValues({
+        title: task.title,
+        content: task.content,
+        colorId: task.color_id,
+      });
     }
-  }, [task, colors]);
-
-  const validate = (): boolean => {
-    const newErrors: { title?: string; content?: string } = {};
-    
-    if (!title.trim()) {
-      newErrors.title = 'O título é obrigatório';
-    }
-    
-    if (!content.trim()) {
-      newErrors.content = 'O conteúdo é obrigatório';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validate()) return;
-    
-    onSubmit(title, content, colorId);
-  };
+  }, [task]);
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={form.handleSubmit}>
       <div className={styles.header}>
         <h2>{task ? 'Editar Tarefa' : 'Nova Tarefa'}</h2>
         <div className={styles.colorPickerContainer}>
           <ColorPicker
             colors={colors}
-            selectedColorId={colorId}
-            onChange={setColorId}
+            selectedColorId={form.values.colorId}
+            onChange={(colorId) => form.setFieldValue('colorId', colorId)}
           />
         </div>
       </div>
@@ -81,10 +93,12 @@ export const TaskForm = ({
       <div className={styles.formGroup}>
         <Input
           label="Título"
+          name="title"
           placeholder="Título da tarefa"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          error={errors.title}
+          value={form.values.title}
+          onChange={form.handleChange}
+          onBlur={form.handleBlur}
+          error={form.touched.title ? form.errors.title : undefined}
           fullWidth
         />
       </div>
@@ -92,13 +106,19 @@ export const TaskForm = ({
       <div className={styles.formGroup}>
         <label className={styles.label}>
           Conteúdo
-          {errors.content && <span className={styles.error}>{errors.content}</span>}
+          {form.touched.content && form.errors.content && (
+            <span className={styles.error}>{form.errors.content}</span>
+          )}
         </label>
         <textarea
-          className={`${styles.textarea} ${errors.content ? styles.hasError : ''}`}
+          name="content"
+          className={`${styles.textarea} ${
+            form.touched.content && form.errors.content ? styles.hasError : ''
+          }`}
           placeholder="Conteúdo da tarefa"
-          value={content}
-          onChange={e => setContent(e.target.value)}
+          value={form.values.content}
+          onChange={form.handleChange}
+          onBlur={form.handleBlur}
           rows={5}
         />
       </div>
@@ -114,7 +134,8 @@ export const TaskForm = ({
         
         <Button
           type="submit"
-          isLoading={isLoading}
+          isLoading={isLoading || form.isSubmitting}
+          disabled={!form.isValid}
         >
           {task ? 'Atualizar' : 'Criar'}
         </Button>

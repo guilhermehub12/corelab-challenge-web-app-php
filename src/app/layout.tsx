@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '../context/AuthContext';
 import { TasksProvider } from '../context/TasksContext';
+import { UIProvider } from '../context/UIContext';
 import '../styles/globals.scss';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
@@ -20,12 +21,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={montserrat.className}>
-        <AuthProvider>
-          <TasksProvider>
-            {children}
-            <Toaster />
-          </TasksProvider>
-        </AuthProvider>
+        <UIProvider>
+          <AuthProvider>
+            <TasksProvider>
+              {children}
+              <Toaster />
+            </TasksProvider>
+          </AuthProvider>
+        </UIProvider>
       </body>
     </html>
   );

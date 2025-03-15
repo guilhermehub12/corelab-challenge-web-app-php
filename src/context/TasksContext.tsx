@@ -1,10 +1,11 @@
-"use client"
+'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { Task, TaskColor, ApiError } from '../types/api';
-import { tasksService } from '../services/tasks.service';
+import { createContext, useContext, useReducer, useCallback, useEffect, ReactNode } from 'react';
+import { Task, TaskColor, ApiError } from '@/types/api';
+import { tasksService } from '@/services/tasks.service';
 
-interface TasksContextState {
+// Tipos para o estado
+interface TasksState {
   tasks: Task[];
   favorites: Task[];
   colors: TaskColor[];
@@ -12,203 +13,384 @@ interface TasksContextState {
   error: ApiError | null;
   totalPages: number;
   currentPage: number;
+  lastFetched: number | null;
+  searchQuery: string;
 }
 
-interface TasksContextActions {
-  fetchTasks: (page?: number, search?: string) => Promise<void>;
-  fetchFavorites: () => Promise<void>;
+// Tipos para as ações
+type TasksAction =
+  | { type: 'SET_TASKS'; payload: { tasks: Task[]; totalPages: number; currentPage: number } }
+  | { type: 'SET_FAVORITES'; payload: Task[] }
+  | { type: 'SET_COLORS'; payload: TaskColor[] }
+  | { type: 'ADD_TASK'; payload: Task }
+  | { type: 'UPDATE_TASK'; payload: Task }
+  | { type: 'REMOVE_TASK'; payload: number }
+  | { type: 'TOGGLE_FAVORITE'; payload: { id: number; isFavorite: boolean } }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: ApiError | null }
+  | { type: 'SET_SEARCH_QUERY'; payload: string }
+  | { type: 'CLEAR_CACHE' };
+
+// Estado inicial
+const initialState: TasksState = {
+  tasks: [],
+  favorites: [],
+  colors: [],
+  loading: false,
+  error: null,
+  totalPages: 1,
+  currentPage: 1,
+  lastFetched: null,
+  searchQuery: '',
+};
+
+// Reducer para gerenciar o estado
+const tasksReducer = (state: TasksState, action: TasksAction): TasksState => {
+  switch (action.type) {
+    case 'SET_TASKS':
+      return {
+        ...state,
+        tasks: action.payload.tasks,
+        totalPages: action.payload.totalPages,
+        currentPage: action.payload.currentPage,
+        lastFetched: Date.now(),
+      };
+    case 'SET_FAVORITES':
+      return {
+        ...state,
+        favorites: action.payload,
+      };
+    case 'SET_COLORS':
+      return {
+        ...state,
+        colors: action.payload,
+      };
+    case 'ADD_TASK':
+      return {
+        ...state,
+        tasks: [action.payload, ...state.tasks],
+      };
+    case 'UPDATE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.map(task => 
+          task.id === action.payload.id ? action.payload : task
+        ),
+        favorites: state.favorites.map(task => 
+          task.id === action.payload.id ? action.payload : task
+        ),
+      };
+    case 'REMOVE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.filter(task => task.id !== action.payload),
+        favorites: state.favorites.filter(task => task.id !== action.payload),
+      };
+    case 'TOGGLE_FAVORITE':
+      return {
+        ...state,
+        tasks: state.tasks.map(task => 
+          task.id === action.payload.id 
+            ? { ...task, is_favorite: action.payload.isFavorite } 
+            : task
+        ),
+        favorites: action.payload.isFavorite 
+          ? [...state.favorites, state.tasks.find(task => task.id === action.payload.id)!]
+          : state.favorites.filter(task => task.id !== action.payload.id),
+      };
+    case 'SET_LOADING':
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    case 'SET_ERROR':
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case 'SET_SEARCH_QUERY':
+      return {
+        ...state,
+        searchQuery: action.payload,
+      };
+    case 'CLEAR_CACHE':
+      return {
+        ...state,
+        lastFetched: null,
+      };
+    default:
+      return state;
+  }
+};
+
+// Interface do contexto
+interface TasksContextType {
+  // State
+  tasks: Task[];
+  favorites: Task[];
+  colors: TaskColor[];
+  loading: boolean;
+  error: ApiError | null;
+  totalPages: number;
+  currentPage: number;
+  searchQuery: string;
+  
+  // Actions
+  fetchTasks: (page?: number, search?: string, forceRefresh?: boolean) => Promise<void>;
+  fetchFavorites: (forceRefresh?: boolean) => Promise<void>;
   createTask: (title: string, content: string, colorId?: number) => Promise<Task>;
   updateTask: (id: number, title?: string, content?: string, colorId?: number) => Promise<Task>;
   deleteTask: (id: number) => Promise<void>;
   toggleFavorite: (id: number) => Promise<boolean>;
   changeColor: (id: number, colorId: number) => Promise<Task>;
   clearError: () => void;
-  refreshTasks: () => Promise<void>;
+  setSearchQuery: (query: string) => void;
+  clearCache: () => void;
 }
 
-type TasksContextType = TasksContextState & TasksContextActions;
-
+// Criação do contexto
 const TasksContext = createContext<TasksContextType | undefined>(undefined);
 
+// Cache time em milissegundos (5 minutos)
+const CACHE_TIME = 5 * 60 * 1000;
+
 export const TasksProvider = ({ children }: { children: ReactNode }) => {
-  const [state, setState] = useState<TasksContextState>({
-    tasks: [],
-    favorites: [],
-    colors: [],
-    loading: true,
-    error: null,
-    totalPages: 1,
-    currentPage: 1
-  });
-
-  // Funções utilitárias para atualizar o estado imutavelmente
-  const setStateValue = <K extends keyof TasksContextState>(key: K, value: TasksContextState[K]) => {
-    setState(prev => ({ ...prev, [key]: value }));
-  };
-
-  const clearError = useCallback(() => {
-    setStateValue('error', null);
-  }, []);
+  const [state, dispatch] = useReducer(tasksReducer, initialState);
 
   // Carregar cores disponíveis
   useEffect(() => {
     const loadColors = async () => {
       try {
         const { data } = await tasksService.getColors();
-        setStateValue('colors', data);
+        dispatch({ type: 'SET_COLORS', payload: data });
+        // Salvar no localStorage para uso offline
+        localStorage.setItem('taskColors', JSON.stringify(data));
       } catch (err) {
         console.error('Error loading colors:', err);
+        // Tentar carregar do localStorage
+        const cachedColors = localStorage.getItem('taskColors');
+        if (cachedColors) {
+          dispatch({ type: 'SET_COLORS', payload: JSON.parse(cachedColors) });
+        }
       }
     };
 
     loadColors();
   }, []);
 
-  // Carregar tasks
-  const fetchTasks = useCallback(async (page = 1, search?: string) => {
-    setStateValue('loading', true);
-    clearError();
-    try {
-      const response = await tasksService.getAllTasks(page, 10, search);
-      setStateValue('tasks', response.data);
-      setStateValue('totalPages', response.meta.last_page);
-      setStateValue('currentPage', response.meta.current_page);
-    } catch (err: any) {
-      setStateValue('error', err);
-    } finally {
-      setStateValue('loading', false);
-    }
-  }, [clearError]);
+  // Helper para verificar se o cache está válido
+  const isCacheValid = useCallback((): boolean => {
+    if (!state.lastFetched) return false;
+    return Date.now() - state.lastFetched < CACHE_TIME;
+  }, [state.lastFetched]);
 
-  // Recarregar tasks atuais
-  const refreshTasks = useCallback(async () => {
-    return fetchTasks(state.currentPage);
-  }, [fetchTasks, state.currentPage]);
+  // Carregar tarefas
+  const fetchTasks = useCallback(async (page = 1, search = '', forceRefresh = false): Promise<void> => {
+    // Verificar se podemos usar cache
+    if (!forceRefresh && isCacheValid() && page === state.currentPage && search === state.searchQuery) {
+      return;
+    }
+
+    dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_ERROR', payload: null });
+    
+    if (search !== state.searchQuery) {
+      dispatch({ type: 'SET_SEARCH_QUERY', payload: search });
+    }
+
+    try {
+      const response = await tasksService.getAllTasks(page, 12, search);
+      dispatch({ 
+        type: 'SET_TASKS', 
+        payload: {
+          tasks: response.data,
+          totalPages: response.meta.last_page,
+          currentPage: response.meta.current_page
+        }
+      });
+      
+      // Salvar uma versão simplificada no localStorage para uso offline
+      localStorage.setItem('cachedTasks', JSON.stringify({
+        tasks: response.data,
+        totalPages: response.meta.last_page,
+        currentPage: response.meta.current_page,
+        timestamp: Date.now(),
+        searchQuery: search
+      }));
+    } catch (err: any) {
+      dispatch({ type: 'SET_ERROR', payload: err });
+      
+      // Tentar carregar do localStorage em caso de erro
+      const cachedTasksJSON = localStorage.getItem('cachedTasks');
+      if (cachedTasksJSON) {
+        try {
+          const cachedData = JSON.parse(cachedTasksJSON);
+          dispatch({ 
+            type: 'SET_TASKS', 
+            payload: {
+              tasks: cachedData.tasks,
+              totalPages: cachedData.totalPages,
+              currentPage: cachedData.currentPage
+            }
+          });
+          dispatch({ type: 'SET_SEARCH_QUERY', payload: cachedData.searchQuery });
+        } catch (e) {
+          console.error('Error parsing cached tasks:', e);
+        }
+      }
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  }, [state.currentPage, state.searchQuery, isCacheValid]);
 
   // Carregar favoritos
-  const fetchFavorites = useCallback(async () => {
+  const fetchFavorites = useCallback(async (forceRefresh = false): Promise<void> => {
+    // Se já temos favoritos e não é forçada a atualização, retornamos
+    if (!forceRefresh && state.favorites.length > 0 && isCacheValid()) {
+      return;
+    }
+
     try {
       const response = await tasksService.getFavorites();
-      setStateValue('favorites', response.data);
+      dispatch({ type: 'SET_FAVORITES', payload: response.data });
+      
+      // Salvar no localStorage para uso offline
+      localStorage.setItem('cachedFavorites', JSON.stringify({
+        favorites: response.data,
+        timestamp: Date.now()
+      }));
     } catch (err) {
       console.error('Error loading favorites:', err);
+      
+      // Tentar carregar do localStorage em caso de erro
+      const cachedFavoritesJSON = localStorage.getItem('cachedFavorites');
+      if (cachedFavoritesJSON) {
+        try {
+          const cachedData = JSON.parse(cachedFavoritesJSON);
+          dispatch({ type: 'SET_FAVORITES', payload: cachedData.favorites });
+        } catch (e) {
+          console.error('Error parsing cached favorites:', e);
+        }
+      }
+    }
+  }, [state.favorites.length, isCacheValid]);
+
+  // Criar tarefa
+  const createTask = useCallback(async (title: string, content: string, colorId?: number): Promise<Task> => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_ERROR', payload: null });
+    
+    try {
+      const response = await tasksService.createTask({ title, content, color_id: colorId });
+      const newTask = response.data;
+      
+      dispatch({ type: 'ADD_TASK', payload: newTask });
+      dispatch({ type: 'CLEAR_CACHE' });
+      
+      return newTask;
+    } catch (err: any) {
+      dispatch({ type: 'SET_ERROR', payload: err });
+      throw err;
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
     }
   }, []);
 
-  // Criar task
-  const createTask = useCallback(async (title: string, content: string, colorId?: number): Promise<Task> => {
-    setStateValue('loading', true);
-    clearError();
-    try {
-      const response = await tasksService.createTask({ title, content, color_id: colorId });
-      // Recarregar tasks após criar
-      await refreshTasks();
-      if (state.favorites.length > 0) {
-        await fetchFavorites();
-      }
-      return response.data;
-    } catch (err: any) {
-      setStateValue('error', err);
-      throw err;
-    } finally {
-      setStateValue('loading', false);
-    }
-  }, [clearError, fetchFavorites, refreshTasks, state.favorites.length]);
-
-  // Atualizar task
+  // Atualizar tarefa
   const updateTask = useCallback(async (id: number, title?: string, content?: string, colorId?: number): Promise<Task> => {
-    setStateValue('loading', true);
-    clearError();
+    dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_ERROR', payload: null });
+    
     try {
       const response = await tasksService.updateTask(id, { title, content, color_id: colorId });
+      const updatedTask = response.data;
       
-      // Atualizar o estado localmente para evitar nova requisição
-      setStateValue('tasks', state.tasks.map(task => 
-        task.id === id ? response.data : task
-      ));
+      dispatch({ type: 'UPDATE_TASK', payload: updatedTask });
       
-      setStateValue('favorites', state.favorites.map(task => 
-        task.id === id ? response.data : task
-      ));
-      
-      return response.data;
+      return updatedTask;
     } catch (err: any) {
-      setStateValue('error', err);
+      dispatch({ type: 'SET_ERROR', payload: err });
       throw err;
     } finally {
-      setStateValue('loading', false);
+      dispatch({ type: 'SET_LOADING', payload: false });
     }
-  }, [clearError, state.favorites, state.tasks]);
+  }, []);
 
-  // Excluir task
+  // Excluir tarefa
   const deleteTask = useCallback(async (id: number): Promise<void> => {
-    setStateValue('loading', true);
-    clearError();
+    dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_ERROR', payload: null });
+    
     try {
       await tasksService.deleteTask(id);
-      // Atualizar estados
-      setStateValue('tasks', state.tasks.filter(task => task.id !== id));
-      setStateValue('favorites', state.favorites.filter(task => task.id !== id));
+      dispatch({ type: 'REMOVE_TASK', payload: id });
     } catch (err: any) {
-      setStateValue('error', err);
+      dispatch({ type: 'SET_ERROR', payload: err });
       throw err;
     } finally {
-      setStateValue('loading', false);
+      dispatch({ type: 'SET_LOADING', payload: false });
     }
-  }, [clearError, state.favorites, state.tasks]);
+  }, []);
 
   // Alternar favorito
   const toggleFavorite = useCallback(async (id: number): Promise<boolean> => {
     try {
       const { data } = await tasksService.toggleFavorite(id);
       
-      // Atualizar o estado da task nos arrays
-      setStateValue('tasks', state.tasks.map(task => 
-        task.id === id ? { ...task, is_favorite: data.is_favorite } : task
-      ));
-      
-      // Se tornou favorito, adiciona aos favoritos
-      if (data.is_favorite) {
-        const taskToAdd = state.tasks.find(task => task.id === id);
-        if (taskToAdd && !state.favorites.some(task => task.id === id)) {
-          setStateValue('favorites', [...state.favorites, { ...taskToAdd, is_favorite: true }]);
-        }
-      } else {
-        // Se deixou de ser favorito, remove dos favoritos
-        setStateValue('favorites', state.favorites.filter(task => task.id !== id));
-      }
+      dispatch({ 
+        type: 'TOGGLE_FAVORITE', 
+        payload: { id, isFavorite: data.is_favorite } 
+      });
       
       return data.is_favorite;
     } catch (err) {
       console.error('Error toggling favorite:', err);
       return false;
     }
-  }, [state.favorites, state.tasks]);
+  }, []);
 
-  // Mudar cor da task
+  // Mudar cor da tarefa
   const changeColor = useCallback(async (id: number, colorId: number): Promise<Task> => {
     try {
       const { data } = await tasksService.changeColor(id, colorId);
       
-      // Atualizar estado
-      setStateValue('tasks', state.tasks.map(task => 
-        task.id === id ? data : task
-      ));
-      
-      setStateValue('favorites', state.favorites.map(task => 
-        task.id === id ? data : task
-      ));
+      dispatch({ type: 'UPDATE_TASK', payload: data });
       
       return data;
     } catch (err) {
       console.error('Error changing color:', err);
       throw err;
     }
-  }, [state.favorites, state.tasks]);
+  }, []);
+
+  // Limpar erros
+  const clearError = useCallback(() => {
+    dispatch({ type: 'SET_ERROR', payload: null });
+  }, []);
+
+  // Definir query de pesquisa
+  const setSearchQuery = useCallback((query: string) => {
+    dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
+  }, []);
+
+  // Limpar cache
+  const clearCache = useCallback(() => {
+    dispatch({ type: 'CLEAR_CACHE' });
+  }, []);
 
   return (
     <TasksContext.Provider value={{
-      ...state,
+      // State
+      tasks: state.tasks,
+      favorites: state.favorites,
+      colors: state.colors,
+      loading: state.loading,
+      error: state.error,
+      totalPages: state.totalPages,
+      currentPage: state.currentPage,
+      searchQuery: state.searchQuery,
+      
+      // Actions
       fetchTasks,
       fetchFavorites,
       createTask,
@@ -217,7 +399,8 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       toggleFavorite,
       changeColor,
       clearError,
-      refreshTasks
+      setSearchQuery,
+      clearCache
     }}>
       {children}
     </TasksContext.Provider>
@@ -227,7 +410,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
 export const useTasks = () => {
   const context = useContext(TasksContext);
   if (context === undefined) {
-    throw new Error('useTasks deve ser usado dentro de um TasksProvider');
+    throw new Error('useTasks must be used within a TasksProvider');
   }
   return context;
 };
