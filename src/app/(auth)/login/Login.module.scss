@@ -1,0 +1,62 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $color-light-grey;
+  padding: $spacing-md;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 400px;
+  background-color: $color-white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-md;
+}
+
+.logoContainer {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+}
+
+.logo {
+  color: $color-primary;
+  font-size: 2rem;
+  font-weight: $font-weight-bold;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-xs;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: rgba($color-black, 0.6);
+  margin-bottom: $spacing-lg;
+}
+
+.form {
+  margin-bottom: $spacing-lg;
+}
+
+.links {
+  text-align: center;
+}
+
+.link {
+  color: $color-primary;
+  text-decoration: none;
+  font-size: $font-size-sm;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}

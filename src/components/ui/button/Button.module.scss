@@ -1,0 +1,136 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: none;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  font-weight: $font-weight-medium;
+  transition: all 0.2s ease-in-out;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.3);
+  }
+}
+
+// Variantes
+.primary {
+  background-color: $color-primary;
+  color: $color-white;
+
+  &:hover:not(:disabled) {
+    background-color: darken($color-primary, 10%);
+  }
+}
+
+.secondary {
+  background-color: $color-grey;
+  color: $color-white;
+
+  &:hover:not(:disabled) {
+    background-color: darken($color-grey, 10%);
+  }
+}
+
+.danger {
+  background-color: $color-red;
+  color: $color-white;
+
+  &:hover:not(:disabled) {
+    background-color: darken($color-red, 10%);
+  }
+}
+
+.success {
+  background-color: $color-green;
+  color: $color-white;
+
+  &:hover:not(:disabled) {
+    background-color: darken($color-green, 10%);
+  }
+}
+
+.outline {
+  background-color: transparent;
+  color: $color-primary;
+  border: 1px solid $color-primary;
+
+  &:hover:not(:disabled) {
+    background-color: rgba($color-primary, 0.1);
+  }
+}
+
+// Tamanhos
+.sm {
+  padding: $spacing-xs $spacing-sm;
+  font-size: $font-size-sm;
+  height: 32px;
+}
+
+.md {
+  padding: $spacing-sm $spacing-md;
+  font-size: $font-size-base;
+  height: 40px;
+}
+
+.lg {
+  padding: $spacing-sm $spacing-lg;
+  font-size: $font-size-lg;
+  height: 48px;
+}
+
+// Largura completa
+.fullWidth {
+  width: 100%;
+}
+
+// Estado de carregamento
+.loading {
+  cursor: wait;
+}
+
+.spinner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba($color-white, 0.3);
+  border-radius: 50%;
+  border-top-color: $color-white;
+  animation: spin 0.8s linear infinite;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.leftIcon, .rightIcon {
+  display: flex;
+  align-items: center;
+}
+
+.leftIcon {
+  margin-right: $spacing-xs;
+}
+
+.rightIcon {
+  margin-left: $spacing-xs;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

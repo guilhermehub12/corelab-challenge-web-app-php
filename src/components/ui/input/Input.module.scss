@@ -1,0 +1,107 @@
+@import '../../../styles/abstracts/variables';
+@import '../../../styles/abstracts/mixins';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: $spacing-md;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.label {
+  font-size: $font-size-sm;
+  margin-bottom: $spacing-xs;
+  font-weight: $font-weight-medium;
+  color: $color-black;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba($color-black, 0.2);
+  border-radius: $border-radius-md;
+  background-color: $color-white;
+  transition: all 0.2s ease;
+
+  &:focus-within {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba($color-primary, 0.1);
+  }
+
+  &.error {
+    border-color: $color-red;
+    
+    &:focus-within {
+      box-shadow: 0 0 0 2px rgba($color-red, 0.1);
+    }
+  }
+}
+
+.input {
+  padding: $spacing-md;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: $color-black;
+  font-size: $font-size-base;
+  
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: rgba($color-black, 0.4);
+  }
+
+  &.hasLeftIcon {
+    padding-left: 36px;
+  }
+
+  &.hasRightIcon {
+    padding-right: 36px;
+  }
+}
+
+.leftIcon, .rightIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba($color-black, 0.4);
+}
+
+.leftIcon {
+  left: $spacing-sm;
+}
+
+.rightIcon {
+  right: $spacing-sm;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: $spacing-sm;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 16px;
+  color: rgba($color-black, 0.5);
+  
+  &:focus {
+    outline: none;
+  }
+}
+
+.errorMessage {
+  font-size: $font-size-sm;
+  color: $color-red;
+  margin-top: $spacing-xs;
+}

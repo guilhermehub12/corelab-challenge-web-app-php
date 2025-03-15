@@ -1,8 +1,34 @@
+'use client';
 
-export default function Home() {
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+
+export default function HomePage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading) {
+      if (user) {
+        // Se o usuário estiver logado, redirecione para as tarefas
+        router.push('/tasks');
+      } else {
+        // Se não estiver logado, redirecione para o login
+        router.push('/login');
+      }
+    }
+  }, [user, loading, router]);
+
+  // Tela de carregamento simples
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      Home Page
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100vh' 
+    }}>
+      <h1>Carregando...</h1>
     </div>
   );
 }
