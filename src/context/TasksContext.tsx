@@ -73,10 +73,10 @@ const tasksReducer = (state: TasksState, action: TasksAction): TasksState => {
     case 'UPDATE_TASK':
       return {
         ...state,
-        tasks: state.tasks.map(task => 
+        tasks: state.tasks.map(task =>
           task.id === action.payload.id ? action.payload : task
         ),
-        favorites: state.favorites.map(task => 
+        favorites: state.favorites.map(task =>
           task.id === action.payload.id ? action.payload : task
         ),
       };
@@ -89,12 +89,12 @@ const tasksReducer = (state: TasksState, action: TasksAction): TasksState => {
     case 'TOGGLE_FAVORITE':
       return {
         ...state,
-        tasks: state.tasks.map(task => 
-          task.id === action.payload.id 
-            ? { ...task, is_favorited: action.payload.isFavorite } 
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.id
+            ? { ...task, is_favorited: action.payload.isFavorite }
             : task
         ),
-        favorites: action.payload.isFavorite 
+        favorites: action.payload.isFavorite
           ? [...state.favorites, state.tasks.find(task => task.id === action.payload.id)!]
           : state.favorites.filter(task => task.id !== action.payload.id),
       };
@@ -134,7 +134,7 @@ interface TasksContextType {
   totalPages: number;
   currentPage: number;
   searchQuery: string;
-  
+
   // Actions
   fetchTasks: (page?: number, search?: string, forceRefresh?: boolean) => Promise<void>;
   fetchFavorites: (forceRefresh?: boolean) => Promise<void>;
@@ -194,22 +194,22 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
 
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
-    
+
     if (search !== state.searchQuery) {
       dispatch({ type: 'SET_SEARCH_QUERY', payload: search });
     }
 
     try {
       const response = await tasksService.getAllTasks(page, 12, search);
-      dispatch({ 
-        type: 'SET_TASKS', 
+      dispatch({
+        type: 'SET_TASKS',
         payload: {
           tasks: response.data,
           totalPages: response.meta.last_page,
           currentPage: response.meta.current_page
         }
       });
-      
+
       // Salvar uma versão simplificada no localStorage para uso offline
       localStorage.setItem('cachedTasks', JSON.stringify({
         tasks: response.data,
@@ -220,14 +220,14 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       }));
     } catch (err: any) {
       dispatch({ type: 'SET_ERROR', payload: err });
-      
+
       // Tentar carregar do localStorage em caso de erro
       const cachedTasksJSON = localStorage.getItem('cachedTasks');
       if (cachedTasksJSON) {
         try {
           const cachedData = JSON.parse(cachedTasksJSON);
-          dispatch({ 
-            type: 'SET_TASKS', 
+          dispatch({
+            type: 'SET_TASKS',
             payload: {
               tasks: cachedData.tasks,
               totalPages: cachedData.totalPages,
@@ -254,7 +254,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await tasksService.getFavorites();
       dispatch({ type: 'SET_FAVORITES', payload: response.data });
-      
+
       // Salvar no localStorage para uso offline
       localStorage.setItem('cachedFavorites', JSON.stringify({
         favorites: response.data,
@@ -262,7 +262,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       }));
     } catch (err) {
       console.error('Error loading favorites:', err);
-      
+
       // Tentar carregar do localStorage em caso de erro
       const cachedFavoritesJSON = localStorage.getItem('cachedFavorites');
       if (cachedFavoritesJSON) {
@@ -280,14 +280,14 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
   const createTask = useCallback(async (title: string, content: string, colorId?: number): Promise<Task> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
-    
+
     try {
       const response = await tasksService.createTask({ title, content, color_id: colorId });
       const newTask = response.data;
-      
+
       dispatch({ type: 'ADD_TASK', payload: newTask });
       dispatch({ type: 'CLEAR_CACHE' });
-      
+
       return newTask;
     } catch (err: any) {
       dispatch({ type: 'SET_ERROR', payload: err });
@@ -301,13 +301,13 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
   const updateTask = useCallback(async (id: number, title?: string, content?: string, colorId?: number): Promise<Task> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
-    
+
     try {
       const response = await tasksService.updateTask(id, { title, content, color_id: colorId });
       const updatedTask = response.data;
-      
+
       dispatch({ type: 'UPDATE_TASK', payload: updatedTask });
-      
+
       return updatedTask;
     } catch (err: any) {
       dispatch({ type: 'SET_ERROR', payload: err });
@@ -321,7 +321,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
   const deleteTask = useCallback(async (id: number): Promise<void> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
-    
+
     try {
       await tasksService.deleteTask(id);
       dispatch({ type: 'REMOVE_TASK', payload: id });
@@ -337,15 +337,16 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
   const toggleFavorite = useCallback(async (id: number): Promise<boolean> => {
     try {
       const { data } = await tasksService.toggleFavorite(id);
-      
-      dispatch({ 
-        type: 'TOGGLE_FAVORITE', 
-        payload: { id, isFavorite: data.is_favorited } 
+      const isTaskFavorited = data?.is_favorited ?? false;
+
+      dispatch({
+        type: 'TOGGLE_FAVORITE',
+        payload: { id, isFavorite: isTaskFavorited }
       });
-      
-      return data.is_favorited;
+
+      return isTaskFavorited;
     } catch (err) {
-      console.error('Error toggling favorite:', err);
+      console.error('Erro alternando o favorito:', err);
       return false;
     }
   }, []);
@@ -354,9 +355,9 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
   const changeColor = useCallback(async (id: number, colorId: number): Promise<Task> => {
     try {
       const { data } = await tasksService.changeColor(id, colorId);
-      
+
       dispatch({ type: 'UPDATE_TASK', payload: data });
-      
+
       return data;
     } catch (err) {
       console.error('Error changing color:', err);
@@ -390,7 +391,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       totalPages: state.totalPages,
       currentPage: state.currentPage,
       searchQuery: state.searchQuery,
-      
+
       // Actions
       fetchTasks,
       fetchFavorites,

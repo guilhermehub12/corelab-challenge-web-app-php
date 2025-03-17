@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Task } from '@/types/api';
 import { formatDate } from '@/utils/dateUtils';
 import styles from './TaskCard.module.scss';
@@ -19,9 +19,19 @@ export const TaskCardComponent  = ({
   onToggleFavorite
 }: TaskCardProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+  const [isFavorited, setIsFavorited] = useState(task.is_favorited);
+
+  useEffect(() => {
+    setIsFavorited(task.is_favorited);
+  }, [task.is_favorited]);
+
   const toggleMenu = () => {
     setIsMenuOpen(prev => !prev);
+  };
+
+  const handleToggleFavorite = () => {
+    setIsFavorited(!isFavorited);
+    onToggleFavorite(task.id);
   };
 
   return (
@@ -34,11 +44,11 @@ export const TaskCardComponent  = ({
         
         <div className={styles.actions}>
           <button 
-            className={`${styles.favoriteButton} ${task.is_favorited ? styles.favorited : ''}`}
-            onClick={() => onToggleFavorite(task.id)}
-            aria-label={task.is_favorited ? "Remove from favorites" : "Add to favorites"}
+            className={`${styles.favoriteButton} ${isFavorited ? styles.favorited : ''}`}
+            onClick={handleToggleFavorite}
+            aria-label={isFavorited ? "Remova dos favoritos" : "Adicione aos favoritos"}
           >
-            <StarIcon filled={task.is_favorited} />
+            <StarIcon filled={isFavorited} />
           </button>
           
           <button 

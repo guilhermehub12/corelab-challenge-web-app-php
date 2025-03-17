@@ -103,7 +103,13 @@ axiosInstance.interceptors.response.use(
 
     // Log do erro para debugging (em desenvolvimento)
     if (process.env.NODE_ENV === "development") {
-      console.error("API Erro (log de erro para debug no axios.ts):", apiError);
+      console.error("API Erro:", {
+        apiError,
+        url: error.config?.url,
+        method: error.config?.method,
+        headers: error.config?.headers,
+        hasToken: typeof window !== "undefined" ? !!getCookie('token') : 'N/A'
+      });
     }
 
     return Promise.reject(apiError);

@@ -17,19 +17,19 @@ interface TaskGridProps {
   showCreateButton?: boolean;
 }
 
-export const TaskGrid = ({ 
-  tasks, 
-  title = 'Tarefas', 
-  showCreateButton = true 
+export const TaskGrid = ({
+  tasks,
+  title = 'Tarefas',
+  showCreateButton = true
 }: TaskGridProps) => {
   const { colors, createTask, updateTask, deleteTask, toggleFavorite, changeColor } = useTasks();
   const notification = useNotification();
-  
+
   // Modais usando o hook useModal
   const createModal = useModal();
   const editModal = useModal();
   const deleteModal = useModal();
-  
+
   // Estado de loading
   const { state: uiState, updateState } = useUIState({
     isSubmitting: false,
@@ -52,7 +52,7 @@ export const TaskGrid = ({
 
   const handleEditTask = useCallback(async (title: string, content: string, colorId: number) => {
     if (!uiState.selectedTask) return;
-    
+
     updateState({ isSubmitting: true });
     try {
       await updateTask(uiState.selectedTask.id, title, content, colorId);
@@ -67,7 +67,7 @@ export const TaskGrid = ({
 
   const handleDeleteTask = useCallback(async () => {
     if (!uiState.selectedTask) return;
-    
+
     updateState({ isSubmitting: true });
     try {
       await deleteTask(uiState.selectedTask.id);
@@ -84,8 +84,8 @@ export const TaskGrid = ({
     try {
       const result = await toggleFavorite(taskId);
       notification.success(
-        result 
-          ? 'Tarefa adicionada aos favoritos!' 
+        result
+          ? 'Tarefa adicionada aos favoritos!'
           : 'Tarefa removida dos favoritos!'
       );
     } catch (error) {
@@ -100,13 +100,13 @@ export const TaskGrid = ({
       notification.error('Erro ao alterar a cor.');
     }
   }, [changeColor, notification]);
-  
+
   // Abrir modal de edição
   const openEditModal = useCallback((task: Task) => {
     updateState({ selectedTask: task });
     editModal.open();
   }, [editModal, updateState]);
-  
+
   // Abrir modal de exclusão
   const openDeleteModal = useCallback((taskId: number) => {
     const task = tasks.find(t => t.id === taskId) || null;
@@ -118,9 +118,9 @@ export const TaskGrid = ({
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>{title}</h1>
-        
+
         {showCreateButton && (
-          <button 
+          <button
             className={styles.createButton}
             onClick={() => createModal.open()}
           >
@@ -128,7 +128,7 @@ export const TaskGrid = ({
           </button>
         )}
       </div>
-      
+
       {tasks.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
@@ -136,9 +136,9 @@ export const TaskGrid = ({
           </div>
           <h2>Nenhuma tarefa encontrada</h2>
           <p>Comece criando uma nova tarefa!</p>
-          
+
           {showCreateButton && (
-            <button 
+            <button
               className={styles.createEmptyButton}
               onClick={() => createModal.open()}
             >
@@ -161,7 +161,7 @@ export const TaskGrid = ({
           ))}
         </div>
       )}
-      
+
       {/* Modal de Criação */}
       <Modal
         isOpen={createModal.isOpen}
@@ -174,7 +174,7 @@ export const TaskGrid = ({
           onCancel={createModal.close}
         />
       </Modal>
-      
+
       {/* Modal de Edição */}
       <Modal
         isOpen={editModal.isOpen}
@@ -190,7 +190,7 @@ export const TaskGrid = ({
           />
         )}
       </Modal>
-      
+
       {/* Modal de Confirmação de Exclusão */}
       <Modal
         isOpen={deleteModal.isOpen}
@@ -199,17 +199,17 @@ export const TaskGrid = ({
         <div className={styles.deleteConfirmation}>
           <h2>Excluir Tarefa</h2>
           <p>Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.</p>
-          
+
           <div className={styles.deleteActions}>
-            <button 
+            <button
               className={styles.cancelButton}
               onClick={deleteModal.close}
               disabled={uiState.isSubmitting}
             >
               Cancelar
             </button>
-            
-            <button 
+
+            <button
               className={styles.deleteButton}
               onClick={handleDeleteTask}
               disabled={uiState.isSubmitting}
