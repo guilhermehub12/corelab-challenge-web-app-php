@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      target: deps
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost/api
