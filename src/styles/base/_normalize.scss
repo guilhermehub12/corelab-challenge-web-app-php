@@ -1,3 +1,5 @@
+@use "../abstracts/variables";
+
 // Reset box model
 *, *::before, *::after {
     box-sizing: border-box;
@@ -7,11 +9,11 @@
   
   // Document
   html {
-    font-family: $font-family-base;
-    line-height: $line-height-base;
+    font-family: variables.$font-family-base;
+    line-height: variables.$line-height-base;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    -webkit-tap-highlight-color: rgba($color-black, 0);
+    -webkit-tap-highlight-color: rgba(variables.$color-black, 0);
     height: 100%;
     scroll-behavior: smooth;
   }
@@ -19,10 +21,10 @@
   // Body
   body {
     margin: 0;
-    font-family: $font-family-base;
-    font-size: $font-size-base;
-    font-weight: $font-weight-normal;
-    line-height: $line-height-base;
+    font-family: variables.$font-family-base;
+    font-size: variables.$font-size-base;
+    font-weight: variables.$font-weight-normal;
+    line-height: variables.$line-height-base;
     color: var(--text-primary);
     background-color: var(--background);
     min-height: 100%;
@@ -34,22 +36,22 @@
   // Typography
   h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
-    margin-bottom: $spacing-md;
-    font-family: $font-family-heading;
-    font-weight: $font-weight-bold;
-    line-height: $line-height-tight;
+    margin-bottom: variables.$spacing-md;
+    font-family: variables.$font-family-heading;
+    font-weight: variables.$font-weight-bold;
+    line-height: variables.$line-height-tight;
     color: var(--text-primary);
   }
   
   p {
     margin-top: 0;
-    margin-bottom: $spacing-md;
+    margin-bottom: variables.$spacing-md;
   }
   
   ol, ul {
-    padding-left: $spacing-lg;
+    padding-left: variables.$spacing-lg;
     margin-top: 0;
-    margin-bottom: $spacing-md;
+    margin-bottom: variables.$spacing-md;
   }
   
   ol ol, ul ul, ol ul, ul ol {
@@ -58,13 +60,13 @@
   
   // Links
   a {
-    color: $color-primary;
+    color: variables.$color-primary;
     text-decoration: none;
     background-color: transparent;
-    transition: color $transition-fast;
+    transition: color variables.$transition-fast;
   
     &:hover {
-      color: $color-primary-dark;
+      color: variables.$color-primary-dark;
       text-decoration: underline;
     }
   }
@@ -88,7 +90,7 @@
   textarea {
     font-family: inherit;
     font-size: 100%;
-    line-height: $line-height-base;
+    line-height: variables.$line-height-base;
     margin: 0;
   }
   
@@ -110,23 +112,23 @@
   }
   
   fieldset {
-    padding: $spacing-sm $spacing-md $spacing-md;
-    border: $border-width-thin solid var(--border);
-    border-radius: $border-radius-md;
-    margin: 0 0 $spacing-md 0;
+    padding: variables.$spacing-sm variables.$spacing-md variables.$spacing-md;
+    border: variables.$border-width-thin solid var(--border);
+    border-radius: variables.$border-radius-md;
+    margin: 0 0 variables.$spacing-md 0;
   }
   
   // Tables
   table {
     border-collapse: collapse;
     width: 100%;
-    margin-bottom: $spacing-md;
+    margin-bottom: variables.$spacing-md;
     color: var(--text-primary);
   }
   
   caption {
-    padding-top: $spacing-md;
-    padding-bottom: $spacing-md;
+    padding-top: variables.$spacing-md;
+    padding-bottom: variables.$spacing-md;
     color: var(--text-secondary);
     text-align: left;
     caption-side: bottom;

@@ -1,5 +1,6 @@
-@import '../../../styles/abstracts/variables';
-@import '../../../styles/abstracts/mixins';
+@use "sass:color";
+@use '../../../styles/abstracts/variables' as *;
+@use '../../../styles/abstracts/mixins' as *;
 
 .container {
   min-height: 100vh;
@@ -39,7 +40,7 @@
 
 .subtitle {
   text-align: center;
-  color: rgba($color-black, 0.6);
+  color: color.rgba($color-black, 0.6);
   margin-bottom: $spacing-lg;
 }
 

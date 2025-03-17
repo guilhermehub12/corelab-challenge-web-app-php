@@ -1,15 +1,15 @@
 // Abstracts
-@import 'abstracts/variables';
-@import 'abstracts/mixins';
-@import 'abstracts/functions';
-@import 'abstracts/theme';
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'abstracts/functions';
+@use 'abstracts/theme';
 
 // Base
-@import 'base/normalize';
-@import 'base/typography';
-@import 'base/animations';
+@use 'base/normalize';
+@use 'base/typography';
+@use 'base/animations';
 
 // Utilidades
-@import 'utilities/spacing';
-@import 'utilities/display';
-@import 'utilities/text';
+@use 'utilities/spacing';
+@use 'utilities/display';
+@use 'utilities/text';

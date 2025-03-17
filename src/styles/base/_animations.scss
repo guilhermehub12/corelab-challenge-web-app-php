@@ -1,3 +1,5 @@
+@use "../abstracts/variables";
+
 // Animações
 
 // Fade in
@@ -11,7 +13,7 @@
   }
   
   .animate-fade-in {
-    animation: fadeIn $transition-base;
+    animation: fadeIn variables.$transition-base;
   }
   
   // Fade in up
@@ -27,7 +29,7 @@
   }
   
   .animate-fade-in-up {
-    animation: fadeInUp $transition-base;
+    animation: fadeInUp variables.$transition-base;
   }
   
   // Fade in down
@@ -43,7 +45,7 @@
   }
   
   .animate-fade-in-down {
-    animation: fadeInDown $transition-base;
+    animation: fadeInDown variables.$transition-base;
   }
   
   // Spinner

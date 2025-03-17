@@ -1,3 +1,5 @@
+@use "../abstracts/variables";
+
 // Utilitários de display
 
 .d-none { display: none !important; }
@@ -43,10 +45,10 @@
 .align-self-stretch { align-self: stretch !important; }
 
 // Grid
-.gap-0 { gap: $space-0 !important; }
-.gap-1 { gap: $space-1 !important; }
-.gap-2 { gap: $space-2 !important; }
-.gap-3 { gap: $space-3 !important; }
-.gap-4 { gap: $space-4 !important; }
-.gap-5 { gap: $space-5 !important; }
-.gap-6 { gap: $space-6 !important; }
+.gap-0 { gap: variables.$space-0 !important; }
+.gap-1 { gap: variables.$space-1 !important; }
+.gap-2 { gap: variables.$space-2 !important; }
+.gap-3 { gap: variables.$space-3 !important; }
+.gap-4 { gap: variables.$space-4 !important; }
+.gap-5 { gap: variables.$space-5 !important; }
+.gap-6 { gap: variables.$space-6 !important; }

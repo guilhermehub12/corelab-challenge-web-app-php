@@ -1,55 +1,55 @@
-@import '../../../styles/abstracts/variables';
-@import '../../../styles/abstracts/mixins';
+@use '../../../styles/abstracts/variables';
+@use '../../../styles/abstracts/mixins';
 
 .container {
   width: 100%;
-  padding: $spacing-md 0;
+  padding: variables.$spacing-md 0;
 }
 
 .filters {
-  margin-bottom: $spacing-lg;
+  margin-bottom: variables.$spacing-lg;
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-md;
+  gap: variables.$spacing-md;
 }
 
 // Skeleton styles
 .skeletonContainer {
   width: 100%;
-  padding: $spacing-md 0;
+  padding: variables.$spacing-md 0;
 }
 
 .skeletonHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-lg;
+  margin-bottom: variables.$spacing-lg;
 }
 
 .skeletonTitle {
   height: 36px;
   width: 200px;
   background-color: var(--background-secondary);
-  border-radius: $border-radius-md;
+  border-radius: variables.$border-radius-md;
 }
 
 .skeletonButton {
   height: 40px;
   width: 120px;
   background-color: var(--background-secondary);
-  border-radius: $border-radius-md;
+  border-radius: variables.$border-radius-md;
 }
 
 .skeletonGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-md;
+  gap: variables.$spacing-md;
   
-  @include respond-above(sm) {
+  @include mixins.respond-above(sm) {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  @include respond-above(md) {
+  @include mixins.respond-above(md) {
     grid-template-columns: repeat(3, 1fr);
   }
 }

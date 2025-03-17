@@ -1,18 +1,19 @@
-@import '../../../styles/abstracts/variables';
-@import '../../../styles/abstracts/mixins';
+@use "sass:color";
+@use '../../../styles/abstracts/variables';
+@use '../../../styles/abstracts/mixins';
 
 .container {
   position: fixed;
-  top: $spacing-lg;
-  right: $spacing-lg;
-  z-index: $z-index-toast;
+  top: variables.$spacing-lg;
+  right: variables.$spacing-lg;
+  z-index: variables.$z-index-toast;
   max-width: 350px;
-  width: calc(100% - #{$spacing-lg * 2});
+  width: calc(100% - #{variables.$spacing-lg * 2});
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: variables.$spacing-sm;
 
-  @include respond-above(md) {
+  @include mixins.respond-above(md) {
     max-width: 400px;
   }
 }
@@ -20,10 +21,10 @@
 .toast {
   display: flex;
   align-items: flex-start;
-  padding: $spacing-md;
+  padding: variables.$spacing-md;
   background-color: var(--background);
-  border-radius: $border-radius-md;
-  box-shadow: $shadow-lg;
+  border-radius: variables.$border-radius-md;
+  box-shadow: variables.$shadow-lg;
   position: relative;
   overflow: hidden;
   border-left: 4px solid;
@@ -36,7 +37,7 @@
 }
 
 .icon {
-  margin-right: $spacing-sm;
+  margin-right: variables.$spacing-sm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,9 +45,9 @@
 
 .content {
   flex: 1;
-  margin-right: $spacing-md;
-  font-size: $font-size-sm;
-  line-height: $line-height-base;
+  margin-right: variables.$spacing-md;
+  font-size: variables.$font-size-sm;
+  line-height: variables.$line-height-base;
 }
 
 .closeButton {
@@ -59,7 +60,7 @@
   color: inherit;
   opacity: 0.7;
   padding: 0;
-  transition: opacity $transition-fast;
+  transition: opacity variables.$transition-fast;
 
   &:hover {
     opacity: 1;
@@ -91,49 +92,49 @@
 
 // Toast types
 .success {
-  border-left-color: $color-success;
+  border-left-color: variables.$color-success;
   
   .icon {
-    color: $color-success;
+    color: variables.$color-success;
   }
   
   .progressBar {
-    background-color: $color-success;
+    background-color: variables.$color-success;
   }
 }
 
 .error {
-  border-left-color: $color-danger;
+  border-left-color: variables.$color-danger;
   
   .icon {
-    color: $color-danger;
+    color: variables.$color-danger;
   }
   
   .progressBar {
-    background-color: $color-danger;
+    background-color: variables.$color-danger;
   }
 }
 
 .warning {
-  border-left-color: $color-warning;
+  border-left-color: variables.$color-warning;
   
   .icon {
-    color: darken($color-warning, 15%);
+    color: color.adjust(variables.$color-warning, $lightness: -15%);
   }
   
   .progressBar {
-    background-color: $color-warning;
+    background-color: variables.$color-warning;
   }
 }
 
 .info {
-  border-left-color: $color-info;
+  border-left-color: variables.$color-info;
   
   .icon {
-    color: $color-info;
+    color: variables.$color-info;
   }
   
   .progressBar {
-    background-color: $color-info;
+    background-color: variables.$color-info;
   }
 }

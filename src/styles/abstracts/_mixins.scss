@@ -1,15 +1,17 @@
+@use "./variables";
+
 // Mixins para responsividade
 @mixin respond-above($breakpoint) {
     @if $breakpoint == xs {
-      @media (min-width: $breakpoint-xs) { @content; }
+      @media (min-width: variables.$breakpoint-xs) { @content; }
     } @else if $breakpoint == sm {
-      @media (min-width: $breakpoint-sm) { @content; }
+      @media (min-width: variables.$breakpoint-sm) { @content; }
     } @else if $breakpoint == md {
-      @media (min-width: $breakpoint-md) { @content; }
+      @media (min-width: variables.$breakpoint-md) { @content; }
     } @else if $breakpoint == lg {
-      @media (min-width: $breakpoint-lg) { @content; }
+      @media (min-width: variables.$breakpoint-lg) { @content; }
     } @else if $breakpoint == xl {
-      @media (min-width: $breakpoint-xl) { @content; }
+      @media (min-width: variables.$breakpoint-xl) { @content; }
     }
   }
   
@@ -26,7 +28,7 @@
   @mixin tasks-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: $spacing-md;
+    gap: variables.$spacing-md;
     
     @include respond-above(sm) {
       grid-template-columns: repeat(2, 1fr);

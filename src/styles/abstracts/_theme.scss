@@ -1,6 +1,9 @@
+@use "./variables";
+
+@use "sass:map";
 // Configuração de temas (Claro/Escuro)
 @function theme-value($theme, $key) {
-    @return map-get($theme, $key);
+    @return map.get($theme, $key);
   }
   
   // Mixin para configurar tema
@@ -16,26 +19,26 @@
   // Aplicação de temas
   :root {
     // Tema claro (padrão)
-    @include set-theme($light-theme);
+    @include set-theme(variables.$light-theme);
     
     // Variáveis para cores de tarefas
-    @each $name, $color in $task-colors {
+    @each $name, $color in variables.$task-colors {
       --task-color-#{$name}: #{$color};
     }
   }
   
   // Tema escuro baseado em atributo data-theme
   [data-theme="dark"] {
-    @include set-theme($dark-theme);
+    @include set-theme(variables.$dark-theme);
     
     // Ajustes específicos para cores de tarefas em tema escuro
-    --task-color-white: #{$color-grey-800};
+    --task-color-white: #{variables.$color-grey-800};
   }
   
   // Detecção automática de preferência de tema
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      @include set-theme($dark-theme);
-      --task-color-white: #{$color-grey-800};
+      @include set-theme(variables.$dark-theme);
+      --task-color-white: #{variables.$color-grey-800};
     }
   }

@@ -1,3 +1,4 @@
+@use "sass:color";
 // ============================================
 // SISTEMA DE CORES
 // ============================================
@@ -46,25 +47,25 @@ $color-grey-900: #1f1f1f;
 
 // Cores primárias
 $color-primary: #4285f4;
-$color-primary-light: lighten($color-primary, 15%);
-$color-primary-dark: darken($color-primary, 15%);
+$color-primary-light: color.adjust($color-primary, $lightness: 15%);
+$color-primary-dark: color.adjust($color-primary, $lightness: -15%);
 
 // Cores de status
 $color-success: #0f9d58;
-$color-success-light: lighten($color-success, 15%);
-$color-success-dark: darken($color-success, 15%);
+$color-success-light: color.adjust($color-success, $lightness: 15%);
+$color-success-dark: color.adjust($color-success, $lightness: -15%);
 
 $color-warning: #ffca28;
-$color-warning-light: lighten($color-warning, 15%);
-$color-warning-dark: darken($color-warning, 15%);
+$color-warning-light: color.adjust($color-warning, $lightness: 15%);
+$color-warning-dark: color.adjust($color-warning, $lightness: -15%);
 
 $color-danger: #ff5252;
-$color-danger-light: lighten($color-danger, 15%);
-$color-danger-dark: darken($color-danger, 15%);
+$color-danger-light: color.adjust($color-danger, $lightness: 15%);
+$color-danger-dark: color.adjust($color-danger, $lightness: -15%);
 
 $color-info: #00bcd4;
-$color-info-light: lighten($color-info, 15%);
-$color-info-dark: darken($color-info, 15%);
+$color-info-light: color.adjust($color-info, $lightness: 15%);
+$color-info-dark: color.adjust($color-info, $lightness: -15%);
 
 // Cores para tarefas
 $task-colors: (

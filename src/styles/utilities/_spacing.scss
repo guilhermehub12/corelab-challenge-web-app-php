@@ -1,56 +1,58 @@
+@use "../abstracts/variables";
+
 // Utilitários de espaçamento
 
 // Margens
-.m-0 { margin: $space-0 !important; }
-.m-1 { margin: $space-1 !important; }
-.m-2 { margin: $space-2 !important; }
-.m-3 { margin: $space-3 !important; }
-.m-4 { margin: $space-4 !important; }
-.m-5 { margin: $space-5 !important; }
-.m-6 { margin: $space-6 !important; }
+.m-0 { margin: variables.$space-0 !important; }
+.m-1 { margin: variables.$space-1 !important; }
+.m-2 { margin: variables.$space-2 !important; }
+.m-3 { margin: variables.$space-3 !important; }
+.m-4 { margin: variables.$space-4 !important; }
+.m-5 { margin: variables.$space-5 !important; }
+.m-6 { margin: variables.$space-6 !important; }
 
 // Margem vertical (y)
-.my-0 { margin-top: $space-0 !important; margin-bottom: $space-0 !important; }
-.my-1 { margin-top: $space-1 !important; margin-bottom: $space-1 !important; }
-.my-2 { margin-top: $space-2 !important; margin-bottom: $space-2 !important; }
-.my-3 { margin-top: $space-3 !important; margin-bottom: $space-3 !important; }
-.my-4 { margin-top: $space-4 !important; margin-bottom: $space-4 !important; }
-.my-5 { margin-top: $space-5 !important; margin-bottom: $space-5 !important; }
-.my-6 { margin-top: $space-6 !important; margin-bottom: $space-6 !important; }
+.my-0 { margin-top: variables.$space-0 !important; margin-bottom: variables.$space-0 !important; }
+.my-1 { margin-top: variables.$space-1 !important; margin-bottom: variables.$space-1 !important; }
+.my-2 { margin-top: variables.$space-2 !important; margin-bottom: variables.$space-2 !important; }
+.my-3 { margin-top: variables.$space-3 !important; margin-bottom: variables.$space-3 !important; }
+.my-4 { margin-top: variables.$space-4 !important; margin-bottom: variables.$space-4 !important; }
+.my-5 { margin-top: variables.$space-5 !important; margin-bottom: variables.$space-5 !important; }
+.my-6 { margin-top: variables.$space-6 !important; margin-bottom: variables.$space-6 !important; }
 
 // Margem horizontal (x)
-.mx-0 { margin-right: $space-0 !important; margin-left: $space-0 !important; }
-.mx-1 { margin-right: $space-1 !important; margin-left: $space-1 !important; }
-.mx-2 { margin-right: $space-2 !important; margin-left: $space-2 !important; }
-.mx-3 { margin-right: $space-3 !important; margin-left: $space-3 !important; }
-.mx-4 { margin-right: $space-4 !important; margin-left: $space-4 !important; }
-.mx-5 { margin-right: $space-5 !important; margin-left: $space-5 !important; }
-.mx-6 { margin-right: $space-6 !important; margin-left: $space-6 !important; }
+.mx-0 { margin-right: variables.$space-0 !important; margin-left: variables.$space-0 !important; }
+.mx-1 { margin-right: variables.$space-1 !important; margin-left: variables.$space-1 !important; }
+.mx-2 { margin-right: variables.$space-2 !important; margin-left: variables.$space-2 !important; }
+.mx-3 { margin-right: variables.$space-3 !important; margin-left: variables.$space-3 !important; }
+.mx-4 { margin-right: variables.$space-4 !important; margin-left: variables.$space-4 !important; }
+.mx-5 { margin-right: variables.$space-5 !important; margin-left: variables.$space-5 !important; }
+.mx-6 { margin-right: variables.$space-6 !important; margin-left: variables.$space-6 !important; }
 .mx-auto { margin-right: auto !important; margin-left: auto !important; }
 
 // Padding
-.p-0 { padding: $space-0 !important; }
-.p-1 { padding: $space-1 !important; }
-.p-2 { padding: $space-2 !important; }
-.p-3 { padding: $space-3 !important; }
-.p-4 { padding: $space-4 !important; }
-.p-5 { padding: $space-5 !important; }
-.p-6 { padding: $space-6 !important; }
+.p-0 { padding: variables.$space-0 !important; }
+.p-1 { padding: variables.$space-1 !important; }
+.p-2 { padding: variables.$space-2 !important; }
+.p-3 { padding: variables.$space-3 !important; }
+.p-4 { padding: variables.$space-4 !important; }
+.p-5 { padding: variables.$space-5 !important; }
+.p-6 { padding: variables.$space-6 !important; }
 
 // Padding vertical (y)
-.py-0 { padding-top: $space-0 !important; padding-bottom: $space-0 !important; }
-.py-1 { padding-top: $space-1 !important; padding-bottom: $space-1 !important; }
-.py-2 { padding-top: $space-2 !important; padding-bottom: $space-2 !important; }
-.py-3 { padding-top: $space-3 !important; padding-bottom: $space-3 !important; }
-.py-4 { padding-top: $space-4 !important; padding-bottom: $space-4 !important; }
-.py-5 { padding-top: $space-5 !important; padding-bottom: $space-5 !important; }
-.py-6 { padding-top: $space-6 !important; padding-bottom: $space-6 !important; }
+.py-0 { padding-top: variables.$space-0 !important; padding-bottom: variables.$space-0 !important; }
+.py-1 { padding-top: variables.$space-1 !important; padding-bottom: variables.$space-1 !important; }
+.py-2 { padding-top: variables.$space-2 !important; padding-bottom: variables.$space-2 !important; }
+.py-3 { padding-top: variables.$space-3 !important; padding-bottom: variables.$space-3 !important; }
+.py-4 { padding-top: variables.$space-4 !important; padding-bottom: variables.$space-4 !important; }
+.py-5 { padding-top: variables.$space-5 !important; padding-bottom: variables.$space-5 !important; }
+.py-6 { padding-top: variables.$space-6 !important; padding-bottom: variables.$space-6 !important; }
 
 // Padding horizontal (x)
-.px-0 { padding-right: $space-0 !important; padding-left: $space-0 !important; }
-.px-1 { padding-right: $space-1 !important; padding-left: $space-1 !important; }
-.px-2 { padding-right: $space-2 !important; padding-left: $space-2 !important; }
-.px-3 { padding-right: $space-3 !important; padding-left: $space-3 !important; }
-.px-4 { padding-right: $space-4 !important; padding-left: $space-4 !important; }
-.px-5 { padding-right: $space-5 !important; padding-left: $space-5 !important; }
-.px-6 { padding-right: $space-6 !important; padding-left: $space-6 !important; }
+.px-0 { padding-right: variables.$space-0 !important; padding-left: variables.$space-0 !important; }
+.px-1 { padding-right: variables.$space-1 !important; padding-left: variables.$space-1 !important; }
+.px-2 { padding-right: variables.$space-2 !important; padding-left: variables.$space-2 !important; }
+.px-3 { padding-right: variables.$space-3 !important; padding-left: variables.$space-3 !important; }
+.px-4 { padding-right: variables.$space-4 !important; padding-left: variables.$space-4 !important; }
+.px-5 { padding-right: variables.$space-5 !important; padding-left: variables.$space-5 !important; }
+.px-6 { padding-right: variables.$space-6 !important; padding-left: variables.$space-6 !important; }
