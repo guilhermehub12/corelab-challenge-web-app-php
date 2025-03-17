@@ -1,80 +1,166 @@
-## Corelab Challenge:
+# CoreTasks (CoreLab Frontend) - Documentação
 
-You are tasked with building a web application that allows users to create and manage their to-do lists. The application should consist of a responsive webpage built in React, and an API built in PHP Laravel to store and manage the to-do lists.
+## Índice
 
-### The repositories
-The [frontend repository](https://github.com/corelabbr/corelab-challenge-web-app-php)
+1. [Visão Geral](#visão-geral)
+2. [Requisitos](#requisitos)
+3. [Instalação](#instalação)
+4. [Arquitetura](#arquitetura)
+5. [Como Usar](#como-usar)
+6. [Solução de Problemas](#solução-de-problemas)
+7. [Melhorias Futuras](#melhorias-futuras)
 
-If you feel more comfortable, you can pick another React framework and show us your skills.
+## Visão Geral
 
-The [backend repository](https://github.com/corelabbr/corelab-api-challenge-php)
+CoreTasks é uma aplicação web moderna para gerenciamento de tarefas, permitindo que usuários organizem suas atividades com recursos de categorização por cores e favoritos. O sistema foi desenvolvido usando Next.js (React) com TypeScript, oferecendo uma interface responsiva e intuitiva.
 
-If you feel more comfortable, you can pick another PHP framework and show us your skills.
+**Principais Funcionalidades:**
+- Criar, editar e excluir tarefas
+- Organizar tarefas com sistema de cores
+- Marcar tarefas como favoritas
+- Pesquisar e filtrar tarefas
+- Autenticação de usuários
+- Interface adaptável para dispositivos móveis e desktop
 
-### The Layout
-Open the [layout mockup](https://www.figma.com/file/sQrUVHTlyogq3qGdkqGTXN/mockup?node-id=7%3A2&t=ANTOTiqjqGWYuoUr-0) in desktop and mobile version and follow this design as much as possible.
+## Requisitos
 
-### The application should have the following functionality:
+Para instalar e executar o CoreTasks, você precisará:
 
-1. Users should be able to create, read, update, and delete to-do items using the API.
-2. Users should be able to mark an item as a favorite.
-3. Users should be able to set a color for each to-do item.
-4. The React frontend should display the user's to-do list in a responsive and visually appealing manner, with the ability to filter by favorite items and color.
-5. The favorited items should be displayed at the top of the list.
+- **Node.js** (versão 20.x ou superior)
+- **npm** (versão 8.x ou superior) ou **yarn** (versão 1.22.x ou superior)
+- **Conexão com internet** (para instalar dependências)
+- **API CoreTasks** funcionando (backend)
 
-### Technical Requirements:
-1. The backend API should be built in PHP Laravel framework and use a database of your choice (e.g., MySQL, PostgreSQL, etc.).
-2. The frontend should be built in React and use modern web development tools and best practices.
-3. The application should be responsive and visually appealing.
+## Instalação
 
-### Deliverables:
-1. A link to a GitHub repository containing the complete source code for the project.
-2. A written description of how to set up and run the application locally.
+Siga este passo a passo para instalar e executar o CoreTasks Frontend:
 
-### Evaluation Criteria:
-1. Code Quality
-2. Code Format
-3. Code Performance
-4. Frontend Design
-5. If your code is Easily Readable
-6. Mobile First approach
-7. Code Responsibility
-8. Features Work
-9. Responsiveness
-10. Does the application meet the functionality requirements listed above?
-11. Is the code well-organized, easy to read, and well-documented?
-12. Are modern web development tools and best practices used?
-13. Is the application visually appealing and responsive?
+### 1. Clonar o Repositório
 
-### Backend
-Repository: 
-1. PHP: ^7.4
-2. Laravel: ^8.0
-3. Database: Choose your own, you can even use PostgreSQL.
+Abra o terminal ou prompt de comando e execute:
 
-### Frontend
-Repository: 
-1. Node: ^16.15.0
-2. NPM: ^8.5.5
-3. Framework: React TS
-4. Sass or other preprocessor
+```bash
+git clone https://github.com/guilhermehub12/corelab-challenge-web-app-php.git
+cd corelab-challenge-web-app-php
+```
 
-### Want to impress us even more?
-If you feel comfortable and want to impress us even more, you can do the following:
+### 2. Instalar Dependências
 
-1. Work on correct types and interfaces
-2. Work on eslint rules
-3. Work prettier config
-4. Work on docker containers
-5. Work on tests
-6. Work on CI/CD
+```bash
+npm install
+# OU, se preferir usar yarn
+yarn install
+```
 
-### What to do when you finish?
+### 3. Configurar Variáveis de Ambiente
 
-Create a file PULL_REQUEST.md where you will describe what you did and how in as much detail as possible. Feel free to add videos for better explanation.
+Crie um arquivo `.env` na raiz do projeto:
 
-Create a new pull request using the same branch name for Backend and Frontend
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+NEXT_PUBLIC_API_TOKEN=seu_token_api_aqui
+```
 
-Send us the pull requests and that's all!
+> **Nota:** Substitua `seu_token_api_aqui` pelo token fornecido na configuração do backend.
 
-#### Good luck! The sky is the limit 🚀
+### 4. Iniciar o Servidor de Desenvolvimento
+
+```bash
+npm run dev
+# OU
+yarn dev
+```
+
+### 5. Acessar a Aplicação
+
+Abra seu navegador e acesse:
+```
+http://localhost:3000
+```
+
+## Arquitetura
+
+O CoreTasks segue uma arquitetura moderna e organizada:
+
+### Estrutura de Pastas
+
+```
+corelab-challenge-web-app-php/
+├── public/           # Arquivos estáticos
+├── src/              # Código fonte
+│   ├── app/          # Páginas do Next.js (App Router)
+│   ├── components/   # Componentes React reutilizáveis
+│   ├── context/      # Gerenciamento de estado global
+│   ├── hooks/        # Hooks personalizados
+│   ├── lib/          # Bibliotecas e configurações
+│   ├── services/     # Comunicação com a API
+│   ├── styles/       # Estilos (SCSS)
+│   ├── types/        # Tipos TypeScript
+│   └── utils/        # Funções utilitárias
+└── ...               # Arquivos de configuração
+```
+
+### Tecnologias Principais
+
+- **Next.js**: Framework React para renderização do lado do servidor (SSR)
+- **TypeScript**: Tipagem estática para JavaScript
+- **SCSS Modules**: Estilos com escopo local
+- **Axios**: Cliente HTTP para comunicação com a API
+- **Context API**: Gerenciamento de estado global
+
+## Como Usar
+
+### 1. Autenticação
+
+- Ao acessar o sistema, você será redirecionado para a tela de login
+- Para criar uma conta, clique em "Não tem uma conta? Registre-se"
+- Preencha o formulário de registro com seus dados
+- Após login/registro bem-sucedido, você será redirecionado para a página principal
+
+### 2. Gerenciamento de Tarefas
+
+#### Criar uma Nova Tarefa
+1. Clique no botão "Nova Tarefa"
+2. Preencha o título e o conteúdo
+3. Selecione uma cor (opcional)
+4. Clique em "Criar"
+
+#### Editar uma Tarefa
+1. Clique no botão de menu (três pontos) da tarefa
+2. Selecione "Editar"
+3. Modifique os campos desejados
+4. Clique em "Atualizar"
+
+#### Excluir uma Tarefa
+1. Clique no botão de menu (três pontos) da tarefa
+2. Selecione "Excluir"
+3. Confirme a exclusão
+
+#### Marcar como Favorito
+- Clique no ícone de estrela na tarefa para marcar/desmarcar como favorito
+
+### 3. Filtros e Busca
+
+- Use a barra de pesquisa no topo para encontrar tarefas específicas
+- Acesse "Favoritas" no menu lateral para ver apenas tarefas favoritas
+- Use o filtro de cores para visualizar tarefas por categoria de cor
+
+## Melhorias Futuras
+
+O CoreTasks está em constante evolução. Algumas melhorias planejadas incluem:
+
+3. **Notificações**: Alertas para tarefas com prazo próximo
+4. **Calendário Integrado**: Visualização de tarefas em formato de calendário
+5. **Tags Customizáveis**: Adicionar sistema de etiquetas para melhor organização
+6. **Compartilhamento de Tarefas**: Colaboração em tempo real
+
+---
+
+## Suporte
+
+Para relatar problemas ou sugerir melhorias:
+- Abra um issue no GitHub: [github.com/guilhermehub12/corelab-challenge-web-app-php/issues](https://github.com/guilhermehub12/corelab-challenge-web-app-php/issues)
+
+---
+
+Feita com 💓 por [Guilherme Delmiro](https://github.com/guilhermehub12) © CoreTasks
