@@ -14,54 +14,54 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const router = useRouter();
   const notification = useNotification();
-  
+
   const validate = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
-    
+
     if (!email) {
       newErrors.email = 'O email é obrigatório';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Email inválido';
     }
-    
+
     if (!password) {
       newErrors.password = 'A senha é obrigatória';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validate()) return;
-    
+
     setIsLoading(true);
-    
+
     try {
       await login(email, password);
       notification.success('Login realizado com sucesso!');
       router.push('/tasks');
     } catch (error: any) {
       notification.error(error);
-      
+
       // Checar erros específicos
       if (error.errors) {
         const fieldErrors: { email?: string; password?: string } = {};
-        
+
         if (error.errors.email) {
           fieldErrors.email = error.errors.email[0];
         }
-        
+
         if (error.errors.password) {
           fieldErrors.password = error.errors.password[0];
         }
-        
+
         setErrors(fieldErrors);
       }
     } finally {
@@ -75,10 +75,10 @@ export default function LoginPage() {
         <div className={styles.logoContainer}>
           <h1 className={styles.logo}>CoreTasks</h1>
         </div>
-        
+
         <h2 className={styles.title}>Login</h2>
         <p className={styles.subtitle}>Faça login para gerenciar suas tarefas</p>
-        
+
         <form className={styles.form} onSubmit={handleSubmit}>
           <Input
             label="Email"
@@ -89,7 +89,7 @@ export default function LoginPage() {
             error={errors.email}
             fullWidth
           />
-          
+
           <Input
             label="Senha"
             type="password"
@@ -99,7 +99,7 @@ export default function LoginPage() {
             error={errors.password}
             fullWidth
           />
-          
+
           <Button
             type="submit"
             fullWidth
@@ -108,7 +108,7 @@ export default function LoginPage() {
             Entrar
           </Button>
         </form>
-        
+
         <div className={styles.links}>
           <Link href="/register" className={styles.link}>
             Não tem uma conta? Registre-se

@@ -30,11 +30,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         // Verificar se existe um token no cookie
         const token = getCookie('token');
+        console.log("Token encontrado:", token);
         if (token) {
           const { data } = await authService.getCurrentUser();
           setUser(data);
         }
       } catch (err) {
+        console.error('Erro verificando o status de autenticação (debug em checkAuthStatus no AuthContext):', err);
         // Em caso de erro, limpar o token
         deleteCookie('token');
         setUser(null);
@@ -51,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const response = await authService.login({ email, password });
-      
+      console.log("Token recebido:", response.token);
       // Salvar token no cookie (7 dias)
       setCookie('token', response.token, { maxAge: 60 * 60 * 24 * 7 });
       
@@ -129,7 +131,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
   }
   return context;
 };

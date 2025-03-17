@@ -60,7 +60,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           <button 
             className={styles.closeButton} 
             onClick={onClose}
-            aria-label="Close menu"
+            aria-label="Feche o menu"
           >
             <CloseIcon />
           </button>

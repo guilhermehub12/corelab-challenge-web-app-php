@@ -14,16 +14,15 @@ export class TasksService extends ApiService {
   }
 
   // Obter todas as tasks (paginadas)
-  async getAllTasks(
-    page = 1,
-    perPage = 10,
-    search?: string
-  ): Promise<ApiPaginatedResponse<Task>> {
-    const params: Record<string, any> = { page, per_page: perPage };
+  async getAllTasks(page = 1, perPage = 10, search?: string): Promise<ApiPaginatedResponse<Task>> {
+    const params: Record<string, unknown> = { 
+      page, 
+      per_page: perPage 
+    };
     if (search) params.search = search;
-
-    return this.get<ApiPaginatedResponse<Task>>("", params);
+    return this.get<ApiPaginatedResponse<Task>>('', params);
   }
+  
 
   // Obter uma tarefa específica
   async getTask(id: number): Promise<ApiResponse<Task>> {
@@ -62,8 +61,8 @@ export class TasksService extends ApiService {
   // Alternar status de favorito
   async toggleFavorite(
     id: number
-  ): Promise<ApiResponse<{ is_favorite: boolean }>> {
-    return this.post<ApiResponse<{ is_favorite: boolean }>>(
+  ): Promise<ApiResponse<{ is_favorited: boolean }>> {
+    return this.post<ApiResponse<{ is_favorited: boolean }>>(
       `/${id}/favorite`,
       {}
     );

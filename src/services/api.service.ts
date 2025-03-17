@@ -7,17 +7,17 @@ export class ApiService {
     this.endpoint = endpoint;
   }
 
-  protected async get<T>(path = '', params = {}): Promise<T> {
+  protected async get<T>(path = '', params: Record<string, unknown> = {}): Promise<T> {
     const { data } = await axios.get<T>(`${this.endpoint}${path}`, { params });
     return data;
   }
-
-  protected async post<T, D = any>(path = '', payload: D): Promise<T> {
+  
+  protected async post<T, D = Record<string, unknown>>(path = '', payload: D): Promise<T> {
     const { data } = await axios.post<T>(`${this.endpoint}${path}`, payload);
     return data;
   }
 
-  protected async put<T, D = any>(path = '', payload: D): Promise<T> {
+  protected async put<T, D = Record<string, unknown>>(path = '', payload: D): Promise<T> {
     const { data } = await axios.put<T>(`${this.endpoint}${path}`, payload);
     return data;
   }

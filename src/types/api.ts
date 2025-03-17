@@ -15,7 +15,7 @@ export interface User {
     content: string;
     color_id: number;
     color: TaskColor;
-    is_favorite: boolean;
+    is_favorited: boolean;
     user_id: number;
     created_at: string;
     updated_at: string;
@@ -31,6 +31,7 @@ export interface User {
   // Respostas da API
   export interface ApiResponse<T> {
     data: T;
+    status: number;
     message?: string;
   }
   

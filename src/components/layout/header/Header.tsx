@@ -87,12 +87,16 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
                             {user?.name}
                             {user?.profile && (
                                 <Badge
-                                    variant={getUserProfileBadgeVariant(user?.profile)}
+                                    variant={getUserProfileBadgeVariant(
+                                        typeof user?.profile === 'object' ? user?.profile.type : user?.profile
+                                    )}
                                     size="sm"
                                     rounded
                                     className={styles.userBadge}
                                 >
-                                    {formatUserRole(user?.profile)}
+                                    {typeof user?.profile === 'object'
+                                        ? formatUserRole(user?.profile.type)
+                                        : formatUserRole(user?.profile)}
                                 </Badge>
                             )}
                         </div>
@@ -119,8 +123,11 @@ const SearchIcon = () => (
     </svg>
 );
 
-const formatUserRole = (profile?: string): string => {
+const formatUserRole = (profile?: string | { id: number, type: string }): string => {
     if (!profile) return '';
+    if (typeof profile === 'object' && profile !== null) {
+        return formatUserRole(profile.type); // Chamada recursiva com o type
+    }
     const roles: Record<string, string> = {
         admin: 'Admin',
         manager: 'Gerente',
@@ -130,8 +137,11 @@ const formatUserRole = (profile?: string): string => {
 };
 
 
-const getUserProfileBadgeVariant = (profile?: string): 'primary' | 'success' | 'info' => {
+const getUserProfileBadgeVariant = (profile?: string | { id: number, type: string }): 'primary' | 'success' | 'info' => {
     if (!profile) return 'info';
+    if (typeof profile === 'object' && profile !== null) {
+        return getUserProfileBadgeVariant(profile.type); // Chamada recursiva com o type
+    }
     const variants: Record<string, 'primary' | 'success' | 'info'> = {
         admin: 'primary',
         manager: 'success',

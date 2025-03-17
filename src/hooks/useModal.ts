@@ -1,5 +1,9 @@
 import { useState, useCallback } from 'react';
 
+interface ModalData {
+  [key: string]: unknown;
+}
+
 interface UseModalOptions {
   initialOpen?: boolean;
   onOpen?: () => void;
@@ -12,11 +16,11 @@ export function useModal({
   onClose,
 }: UseModalOptions = {}) {
   const [isOpen, setIsOpen] = useState(initialOpen);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ModalData | null>(null);
 
-  const open = useCallback((modalData?: any) => {
+  const open = useCallback((modalData?: ModalData) => {
     setIsOpen(true);
-    setData(modalData);
+    setData(modalData || null);
     onOpen?.();
   }, [onOpen]);
 

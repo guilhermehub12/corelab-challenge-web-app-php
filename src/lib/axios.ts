@@ -1,10 +1,10 @@
-// src/lib/axios.ts
 import axios, {
   AxiosError,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
 import { ApiError } from "../types/api";
+import { deleteCookie, getCookie } from 'cookies-next';
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost/api";
 
@@ -12,13 +12,13 @@ const axiosInstance = axios.create({
   baseURL,
   headers: {
     "Content-Type": "application/json",
-    "Accept": "application/json",
+    Accept: "application/json",
   },
   timeout: 10000, // 10 segundos de timeout
 });
 
 // Lista de rotas de autenticação que não devem redirecionar em caso de erro 401
-const authRoutes = ['/login', '/register'];
+const authRoutes = ["/login", "/register"];
 
 // Interceptor para adicionar tokens
 axiosInstance.interceptors.request.use(
@@ -30,8 +30,9 @@ axiosInstance.interceptors.request.use(
     }
 
     // Adicionar token de autenticação do usuário apenas se existir
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem("token");
+    if (typeof window !== "undefined") {
+      const token = getCookie("token");
+      console.log("Token enviado na requisição:", token);
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -61,28 +62,36 @@ axiosInstance.interceptors.response.use(
 
       // Parse do erro da API
       if (data && typeof data === "object") {
-        apiError.message = (data as any).message || apiError.message;
-        apiError.errors = (data as any).errors;
+        apiError.message =
+          (data as Record<string, unknown>).message?.toString() ||
+          apiError.message;
+        apiError.errors = (data as Record<string, unknown>).errors as
+          | Record<string, string[]>
+          | undefined;
       }
 
       // Verificar se estamos em uma rota de autenticação
-      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-      const isAuthRoute = authRoutes.some(route => currentPath.startsWith(route));
+      const currentPath =
+        typeof window !== "undefined" ? window.location.pathname : "";
+      const isAuthRoute = authRoutes.some((route) =>
+        currentPath.startsWith(route)
+      );
 
       // Lidar com erros específicos por código de status
       switch (status) {
         case 401:
           // Não autorizado - apenas redirecionar se NÃO estiver em uma rota de autenticação
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem("token");
-            
+          if (typeof window !== "undefined") {
+            deleteCookie("token");
+
             // Não redirecionar para login se já estiver em uma rota de autenticação
             if (!isAuthRoute) {
               window.location.href = "/login";
             }
           }
-          
-          apiError.message = "Sessão expirada. Por favor, faça login novamente.";
+
+          apiError.message =
+            "Sessão expirada. Por favor, faça login novamente.";
           break;
         // Outros cases permanecem os mesmos...
       }
@@ -94,7 +103,7 @@ axiosInstance.interceptors.response.use(
 
     // Log do erro para debugging (em desenvolvimento)
     if (process.env.NODE_ENV === "development") {
-      console.error("API Error:", apiError);
+      console.error("API Erro (log de erro para debug no axios.ts):", apiError);
     }
 
     return Promise.reject(apiError);

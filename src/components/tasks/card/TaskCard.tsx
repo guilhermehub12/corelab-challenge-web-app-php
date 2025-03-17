@@ -34,11 +34,11 @@ export const TaskCardComponent  = ({
         
         <div className={styles.actions}>
           <button 
-            className={`${styles.favoriteButton} ${task.is_favorite ? styles.favorited : ''}`}
+            className={`${styles.favoriteButton} ${task.is_favorited ? styles.favorited : ''}`}
             onClick={() => onToggleFavorite(task.id)}
-            aria-label={task.is_favorite ? "Remove from favorites" : "Add to favorites"}
+            aria-label={task.is_favorited ? "Remove from favorites" : "Add to favorites"}
           >
-            <StarIcon filled={task.is_favorite} />
+            <StarIcon filled={task.is_favorited} />
           </button>
           
           <button 
@@ -96,7 +96,7 @@ export const TaskCard = memo(TaskCardComponent, (prevProps, nextProps) => {
     prevProps.task.title === nextProps.task.title &&
     prevProps.task.content === nextProps.task.content &&
     prevProps.task.color_id === nextProps.task.color_id &&
-    prevProps.task.is_favorite === nextProps.task.is_favorite
+    prevProps.task.is_favorited === nextProps.task.is_favorited
   );
 });
 

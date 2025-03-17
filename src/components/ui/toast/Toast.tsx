@@ -88,6 +88,16 @@ export const Toast = ({ id, type, message, duration = 5000, onClose }: ToastProp
 
 // Toast container component
 export const ToastContainer = ({ children }: { children: ReactNode }) => {
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  if (!isMounted) {
+    return null;
+  }
+  
   return createPortal(
     <div className={styles.container}>{children}</div>,
     document.body

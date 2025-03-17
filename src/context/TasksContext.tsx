@@ -91,7 +91,7 @@ const tasksReducer = (state: TasksState, action: TasksAction): TasksState => {
         ...state,
         tasks: state.tasks.map(task => 
           task.id === action.payload.id 
-            ? { ...task, is_favorite: action.payload.isFavorite } 
+            ? { ...task, is_favorited: action.payload.isFavorite } 
             : task
         ),
         favorites: action.payload.isFavorite 
@@ -147,6 +147,7 @@ interface TasksContextType {
   setSearchQuery: (query: string) => void;
   clearCache: () => void;
 }
+// ...restante do código abaixo
 
 // Criação do contexto
 const TasksContext = createContext<TasksContextType | undefined>(undefined);
@@ -166,7 +167,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         // Salvar no localStorage para uso offline
         localStorage.setItem('taskColors', JSON.stringify(data));
       } catch (err) {
-        console.error('Error loading colors:', err);
+        console.error('Error loading colors (debug em loadColors no TasksContext):', err);
         // Tentar carregar do localStorage
         const cachedColors = localStorage.getItem('taskColors');
         if (cachedColors) {
@@ -339,10 +340,10 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       
       dispatch({ 
         type: 'TOGGLE_FAVORITE', 
-        payload: { id, isFavorite: data.is_favorite } 
+        payload: { id, isFavorite: data.is_favorited } 
       });
       
-      return data.is_favorite;
+      return data.is_favorited;
     } catch (err) {
       console.error('Error toggling favorite:', err);
       return false;
