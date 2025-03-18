@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from "react";
 
 interface FormOptions<T> {
   initialValues: T;
@@ -23,7 +23,7 @@ interface FormState<T> {
   isValid: boolean;
 }
 
-export function useForm<T extends Record<string, any>>({
+export function useForm<T extends Record<string, unknown>>({
   initialValues,
   validate,
   onSubmit,
@@ -37,14 +37,14 @@ export function useForm<T extends Record<string, any>>({
   });
 
   const setValues = (values: T) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       values,
     }));
   };
 
   const setFieldValue = <K extends keyof T>(field: K, value: T[K]) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       values: {
         ...prev.values,
@@ -62,8 +62,8 @@ export function useForm<T extends Record<string, any>>({
         ...state.values,
         [field]: value,
       });
-      
-      setState(prev => ({
+
+      setState((prev) => ({
         ...prev,
         errors: newErrors,
         isValid: Object.keys(newErrors).length === 0,
@@ -72,7 +72,7 @@ export function useForm<T extends Record<string, any>>({
   };
 
   const setErrors = (errors: Partial<Record<keyof T, string>>) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       errors,
       isValid: Object.keys(errors).length === 0,
@@ -80,7 +80,7 @@ export function useForm<T extends Record<string, any>>({
   };
 
   const setFieldError = (field: keyof T, error: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       errors: {
         ...prev.errors,
@@ -91,7 +91,7 @@ export function useForm<T extends Record<string, any>>({
   };
 
   const setFieldTouched = (field: keyof T, isTouched: boolean = true) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       touched: {
         ...prev.touched,
@@ -111,7 +111,7 @@ export function useForm<T extends Record<string, any>>({
   };
 
   const setSubmitting = (isSubmitting: boolean) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       isSubmitting,
     }));
@@ -121,18 +121,21 @@ export function useForm<T extends Record<string, any>>({
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
-    
-    let finalValue: any = value;
-    
+    const field = name as keyof T;
+
+    let finalValue: unknown;
+
     // Converter valor para o tipo apropriado
     if (type === 'number') {
       finalValue = value === '' ? '' : Number(value);
     } else if (type === 'checkbox') {
       finalValue = (e.target as HTMLInputElement).checked;
+    } else {
+      finalValue = value;
     }
-    
-    setFieldValue(name as keyof T, finalValue);
-    setFieldTouched(name as keyof T);
+
+    setFieldValue(field, finalValue as T[typeof field]);
+  setFieldTouched(field);
   };
 
   const handleBlur = (
@@ -144,19 +147,19 @@ export function useForm<T extends Record<string, any>>({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Validar todos os campos
     if (validate) {
       const errors = validate(state.values);
       setErrors(errors);
-      
+
       if (Object.keys(errors).length > 0) {
         return;
       }
     }
-    
+
     setSubmitting(true);
-    
+
     try {
       await onSubmit(state.values, {
         setValues,
@@ -178,12 +181,12 @@ export function useForm<T extends Record<string, any>>({
     touched: state.touched,
     isSubmitting: state.isSubmitting,
     isValid: state.isValid,
-    
+
     // Handlers
     handleChange,
     handleBlur,
     handleSubmit,
-    
+
     // Helpers
     setFieldValue,
     setValues,

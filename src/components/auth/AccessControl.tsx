@@ -21,6 +21,6 @@ export const AccessControl = ({
     return <>{fallback}</>;
   }
   
-  // Se o usuário tiver permissão, renderize as crianças
+  // Se o usuário tiver permissão, renderiza
   return <>{children}</>;
 };

@@ -13,6 +13,7 @@ interface TaskFormValues {
   title: string;
   content: string;
   colorId: number;
+  [key: string]: unknown;
 }
 
 interface TaskFormProps {
@@ -32,7 +33,7 @@ export const TaskForm = ({
 }: TaskFormProps) => {
   // Definir valor inicial para cor (azul padrão ou a primeira cor disponível)
   const defaultColorId = colors.find(c => c.name === 'blue')?.id || colors[0]?.id || 1;
-  
+
   // Validador para o formulário
   const { createValidator } = useValidator();
   const validator = createValidator<TaskFormValues>({
@@ -75,7 +76,7 @@ export const TaskForm = ({
         colorId: task.color_id,
       });
     }
-  }, [task]);
+  }, [task, form]);
 
   return (
     <form className={styles.form} onSubmit={form.handleSubmit}>
@@ -89,7 +90,7 @@ export const TaskForm = ({
           />
         </div>
       </div>
-      
+
       <div className={styles.formGroup}>
         <Input
           label="Título"
@@ -102,7 +103,7 @@ export const TaskForm = ({
           fullWidth
         />
       </div>
-      
+
       <div className={styles.formGroup}>
         <label className={styles.label}>
           Conteúdo
@@ -112,9 +113,8 @@ export const TaskForm = ({
         </label>
         <textarea
           name="content"
-          className={`${styles.textarea} ${
-            form.touched.content && form.errors.content ? styles.hasError : ''
-          }`}
+          className={`${styles.textarea} ${form.touched.content && form.errors.content ? styles.hasError : ''
+            }`}
           placeholder="Conteúdo da tarefa"
           value={form.values.content}
           onChange={form.handleChange}
@@ -122,7 +122,7 @@ export const TaskForm = ({
           rows={5}
         />
       </div>
-      
+
       <div className={styles.actions}>
         <Button
           type="button"
@@ -131,7 +131,7 @@ export const TaskForm = ({
         >
           Cancelar
         </Button>
-        
+
         <Button
           type="submit"
           isLoading={isLoading || form.isSubmitting}

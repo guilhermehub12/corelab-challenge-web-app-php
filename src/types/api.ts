@@ -81,7 +81,14 @@ export interface User {
 
   // Erros
 export interface ApiError {
-  message: string;
+  message?: string;
   errors?: Record<string, string[]>;
   status?: number;
+  response?: {
+    data?: {
+      message?: string;
+      errors?: Record<string, string[]>;
+    };
+  };
+
 }

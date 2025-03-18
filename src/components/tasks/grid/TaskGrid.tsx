@@ -22,7 +22,7 @@ export const TaskGrid = ({
   title = 'Tarefas',
   showCreateButton = true
 }: TaskGridProps) => {
-  const { colors, createTask, updateTask, deleteTask, toggleFavorite, changeColor } = useTasks();
+  const { colors, createTask, updateTask, deleteTask, toggleFavorite } = useTasks();
   const notification = useNotification();
 
   // Modais usando o hook useModal
@@ -43,7 +43,7 @@ export const TaskGrid = ({
       await createTask(title, content, colorId);
       notification.success('Tarefa criada com sucesso!');
       createModal.close();
-    } catch (error) {
+    } catch {
       notification.error('Erro ao criar tarefa.');
     } finally {
       updateState({ isSubmitting: false });
@@ -58,7 +58,7 @@ export const TaskGrid = ({
       await updateTask(uiState.selectedTask.id, title, content, colorId);
       notification.success('Tarefa atualizada com sucesso!');
       editModal.close();
-    } catch (error) {
+    } catch {
       notification.error('Erro ao atualizar tarefa.');
     } finally {
       updateState({ isSubmitting: false });
@@ -73,7 +73,7 @@ export const TaskGrid = ({
       await deleteTask(uiState.selectedTask.id);
       notification.success('Tarefa excluída com sucesso!');
       deleteModal.close();
-    } catch (error) {
+    } catch {
       notification.error('Erro ao excluir tarefa.');
     } finally {
       updateState({ isSubmitting: false });
@@ -88,18 +88,18 @@ export const TaskGrid = ({
           ? 'Tarefa adicionada aos favoritos!'
           : 'Tarefa removida dos favoritos!'
       );
-    } catch (error) {
+    } catch {
       notification.error('Erro ao atualizar favoritos.');
     }
   }, [toggleFavorite, notification]);
 
-  const handleColorChange = useCallback(async (taskId: number, colorId: number) => {
-    try {
-      await changeColor(taskId, colorId);
-    } catch (error) {
-      notification.error('Erro ao alterar a cor.');
-    }
-  }, [changeColor, notification]);
+  // const handleColorChange = useCallback(async (taskId: number, colorId: number) => {
+  //   try {
+  //     await changeColor(taskId, colorId);
+  //   } catch {
+  //     notification.error('Erro ao alterar a cor.');
+  //   }
+  // }, [changeColor, notification]);
 
   // Abrir modal de edição
   const openEditModal = useCallback((task: Task) => {
@@ -155,7 +155,7 @@ export const TaskGrid = ({
                 onEdit={openEditModal}
                 onDelete={(taskId) => openDeleteModal(taskId)}
                 onToggleFavorite={handleToggleFavorite}
-                onColorChange={handleColorChange}
+                // onColorChange={handleColorChange}
               />
             </div>
           ))}

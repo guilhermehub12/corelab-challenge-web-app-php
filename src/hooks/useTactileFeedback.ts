@@ -5,18 +5,18 @@ import { useCallback } from 'react';
 // Tipo para vibrações
 export type VibrationType = 'success' | 'error' | 'warning' | 'info' | 'click';
 
+// Padrões de vibração (em ms)
+const vibrationPatterns: Record<VibrationType, number[]> = {
+  success: [100],
+  error: [100, 50, 100],
+  warning: [50, 30, 50],
+  info: [50],
+  click: [10]
+};
+
 export function useTactileFeedback() {
   // Verificar suporte a vibração
   const hasVibration = typeof navigator !== 'undefined' && 'vibrate' in navigator;
-  
-  // Padrões de vibração (em ms)
-  const vibrationPatterns: Record<VibrationType, number[]> = {
-    success: [100],
-    error: [100, 50, 100],
-    warning: [50, 30, 50],
-    info: [50],
-    click: [10]
-  };
   
   // Função para vibrar com padrão específico
   const vibrate = useCallback((type: VibrationType = 'click') => {

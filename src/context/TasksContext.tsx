@@ -4,6 +4,17 @@ import { createContext, useContext, useReducer, useCallback, useEffect, ReactNod
 import { Task, TaskColor, ApiError } from '@/types/api';
 import { tasksService } from '@/services/tasks.service';
 
+const createApiError = (err: unknown): ApiError => {
+  if (err && typeof err === 'object' && 'message' in err) {
+    return err as ApiError;
+  }
+  return { 
+    message: err instanceof Error ? err.message : 'Ocorreu um erro desconhecido',
+    errors: {} 
+  };
+};
+
+
 // Tipos para o estado
 interface TasksState {
   tasks: Task[];
@@ -166,7 +177,8 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         dispatch({ type: 'SET_COLORS', payload: data });
         // Salvar no localStorage para uso offline
         localStorage.setItem('taskColors', JSON.stringify(data));
-      } catch (err) {
+      } catch (err: unknown) {
+        
         console.error('Error loading colors (debug em loadColors no TasksContext):', err);
         // Tentar carregar do localStorage
         const cachedColors = localStorage.getItem('taskColors');
@@ -218,8 +230,9 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         timestamp: Date.now(),
         searchQuery: search
       }));
-    } catch (err: any) {
-      dispatch({ type: 'SET_ERROR', payload: err });
+    } catch (err: unknown) {
+      const apiError = createApiError(err);
+      dispatch({ type: 'SET_ERROR', payload: apiError });    
 
       // Tentar carregar do localStorage em caso de erro
       const cachedTasksJSON = localStorage.getItem('cachedTasks');
@@ -260,7 +273,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         favorites: response.data,
         timestamp: Date.now()
       }));
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error loading favorites:', err);
 
       // Tentar carregar do localStorage em caso de erro
@@ -289,9 +302,10 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: 'CLEAR_CACHE' });
 
       return newTask;
-    } catch (err: any) {
-      dispatch({ type: 'SET_ERROR', payload: err });
-      throw err;
+    } catch (err: unknown) {
+      const apiError = createApiError(err);
+      dispatch({ type: 'SET_ERROR', payload: apiError });
+      throw apiError;
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
@@ -309,9 +323,10 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: 'UPDATE_TASK', payload: updatedTask });
 
       return updatedTask;
-    } catch (err: any) {
-      dispatch({ type: 'SET_ERROR', payload: err });
-      throw err;
+    } catch (err: unknown) {
+      const apiError = createApiError(err);
+      dispatch({ type: 'SET_ERROR', payload: apiError });
+      throw apiError;
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
@@ -325,9 +340,10 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
     try {
       await tasksService.deleteTask(id);
       dispatch({ type: 'REMOVE_TASK', payload: id });
-    } catch (err: any) {
-      dispatch({ type: 'SET_ERROR', payload: err });
-      throw err;
+    } catch (err: unknown) {
+      const apiError = createApiError(err);
+      dispatch({ type: 'SET_ERROR', payload: apiError });
+      throw apiError;
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
@@ -345,7 +361,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       });
 
       return isTaskFavorited;
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Erro alternando o favorito:', err);
       return false;
     }
@@ -359,7 +375,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: 'UPDATE_TASK', payload: data });
 
       return data;
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error changing color:', err);
       throw err;
     }

@@ -2,9 +2,19 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { User } from '../types/api';
+import { ApiError, User } from '../types/api';
 import { authService } from '../services/auth.service';
 import { setCookie, getCookie, deleteCookie } from 'cookies-next';
+
+const createApiError = (err: unknown): ApiError => {
+  if (err && typeof err === 'object' && 'message' in err) {
+    return err as ApiError;
+  }
+  return { 
+    message: err instanceof Error ? err.message : 'Ocorreu um erro desconhecido',
+    errors: {} 
+  };
+};
 
 interface AuthContextType {
   user: User | null;
@@ -59,8 +69,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Atualizar estado do usuário
       setUser(response.user);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao fazer login');
+    } catch (err: unknown) {
+      const apiError = createApiError(err);
+      setError(apiError.response?.data?.message || 'Erro ao fazer login');
       throw err;
     } finally {
       setLoading(false);
@@ -80,8 +91,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Atualizar estado do usuário
       setUser(response.user);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao registrar');
+    } catch (err: unknown) {
+      const apiError = createApiError(err);
+      setError(apiError.response?.data?.message || 'Erro ao registrar');
       throw err;
     } finally {
       setLoading(false);
@@ -101,8 +113,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Redirecionar para login
       router.push('/login');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao fazer logout');
+    } catch (err: unknown) {
+      const apiError = createApiError(err);
+      setError(apiError.response?.data?.message || 'Erro ao fazer logout');
     } finally {
       setLoading(false);
     }

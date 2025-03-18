@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 interface ValidationRule<T> {
-  test: (value: T, formValues?: Record<string, any>) => boolean;
+  test: (value: T, formValues?: Record<string, unknown>) => boolean;
   message: string;
 }
 
@@ -12,12 +12,12 @@ interface ValidationConfig<T> {
   minLength?: { value: number; message: string };
   maxLength?: { value: number; message: string };
   pattern?: { value: RegExp; message: string };
-  validate?: ValidationRule<T>[] | ((value: T, formValues?: Record<string, any>) => string | undefined);
+  validate?: ValidationRule<T>[] | ((value: T, formValues?: Record<string, unknown>) => string | undefined);
 }
 
 export function useValidator() {
   const createValidator = useMemo(() => {
-    return <T extends Record<string, any>>(schema: Record<keyof T, ValidationConfig<T[keyof T]>>) => {
+    return <T extends Record<string, unknown>>(schema: Record<keyof T, ValidationConfig<T[keyof T]>>) => {
       return (values: T): Partial<Record<keyof T, string>> => {
         const errors: Partial<Record<keyof T, string>> = {};
         

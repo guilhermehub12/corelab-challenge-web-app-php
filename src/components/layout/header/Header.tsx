@@ -16,6 +16,11 @@ interface HeaderProps {
     onToggleSidebar: () => void;
 }
 
+interface ProfileObject {
+    id: number;
+    type: string;
+}
+
 export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isScrolled, setIsScrolled] = useState(false);
@@ -23,6 +28,13 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
     const { toggleSidebar } = useUI();
     const router = useRouter();
     const notification = useNotification();
+
+    // Helper para obter o tipo de perfil
+    const getProfileType = (profile: string | ProfileObject | undefined): string => {
+        if (!profile) return '';
+        if (typeof profile === 'string') return profile;
+        return profile.type || '';
+    };
 
     // Detectar scroll para aplicar shadow no header
     useEffect(() => {
@@ -44,7 +56,7 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
             await logout();
             notification.success('Logout realizado com sucesso');
             router.push('/login');
-        } catch (error) {
+        } catch {
             notification.error('Erro ao fazer logout');
         }
     };
@@ -88,15 +100,13 @@ export const Header = ({ onSearch, onToggleSidebar }: HeaderProps) => {
                             {user?.profile && (
                                 <Badge
                                     variant={getUserProfileBadgeVariant(
-                                        typeof user?.profile === 'object' ? user?.profile.type : user?.profile
+                                        getProfileType(user.profile)
                                     )}
                                     size="sm"
                                     rounded
                                     className={styles.userBadge}
                                 >
-                                    {typeof user?.profile === 'object'
-                                        ? formatUserRole(user?.profile.type)
-                                        : formatUserRole(user?.profile)}
+                                    {formatUserRole(getProfileType(user.profile))}
                                 </Badge>
                             )}
                         </div>
@@ -123,11 +133,9 @@ const SearchIcon = () => (
     </svg>
 );
 
-const formatUserRole = (profile?: string | { id: number, type: string }): string => {
+const formatUserRole = (profile: string): string => {
     if (!profile) return '';
-    if (typeof profile === 'object' && profile !== null) {
-        return formatUserRole(profile.type); // Chamada recursiva com o type
-    }
+
     const roles: Record<string, string> = {
         admin: 'Admin',
         manager: 'Gerente',
@@ -137,11 +145,9 @@ const formatUserRole = (profile?: string | { id: number, type: string }): string
 };
 
 
-const getUserProfileBadgeVariant = (profile?: string | { id: number, type: string }): 'primary' | 'success' | 'info' => {
+const getUserProfileBadgeVariant = (profile?: string): 'primary' | 'success' | 'info' => {
     if (!profile) return 'info';
-    if (typeof profile === 'object' && profile !== null) {
-        return getUserProfileBadgeVariant(profile.type); // Chamada recursiva com o type
-    }
+    
     const variants: Record<string, 'primary' | 'success' | 'info'> = {
         admin: 'primary',
         manager: 'success',

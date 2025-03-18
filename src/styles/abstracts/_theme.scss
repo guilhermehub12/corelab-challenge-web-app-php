@@ -23,7 +23,7 @@
     
     // Variáveis para cores de tarefas
     @each $name, $color in variables.$task-colors {
-      --task-color-#{$name}: #{$color};
+      --task-color-#{"#{$name}"}: #{$color};
     }
   }
   

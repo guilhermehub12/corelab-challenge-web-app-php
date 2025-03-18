@@ -9,18 +9,19 @@ import { Pagination } from '@/components/ui/pagination/Pagination';
 import { ColorFilterSelector } from '@/components/tasks/filters/ColorFilterSelector';
 import { AnimatedTransition } from '@/components/ui/animation/AnimatedTransition';
 import styles from './TasksPage.module.scss';
+import { Task } from '@/types/api';
 
 export default function TasksPageContent() {
-  const { 
-    tasks, 
+  const {
+    tasks,
     colors,
-    totalPages, 
-    currentPage, 
-    loading, 
-    error, 
-    fetchTasks, 
+    totalPages,
+    currentPage,
+    loading,
+    error,
+    fetchTasks,
     searchQuery,
-    setSearchQuery 
+    setSearchQuery
   } = useTasks();
   const toast = useToastContext();
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
@@ -37,6 +38,8 @@ export default function TasksPageContent() {
     }
   }, [error, toast]);
 
+  const [filteredResults, setFilteredResults] = useState<Task[]>([]);
+
   // Handler para pesquisa
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
@@ -46,20 +49,23 @@ export default function TasksPageContent() {
   // Handler para filtro de cor
   const handleColorFilter = useCallback((colorId: number | null) => {
     setSelectedColorId(colorId);
-    
+
     // Se uma cor for selecionada, filtrar as tarefas pela cor
     if (colorId !== null) {
       const filteredTasks = tasks.filter(task => task.color_id === colorId);
-      // Não precisamos chamar a API novamente, apenas filtramos localmente
+      setFilteredResults(filteredTasks);
+      console.log('Id da cor: ' + colorId);
+      console.log('tarefas: ' + filteredTasks);
     } else {
       // Se nenhuma cor estiver selecionada, recarregar todas as tarefas
+      setFilteredResults([]);
       fetchTasks(currentPage, searchQuery);
     }
   }, [currentPage, fetchTasks, searchQuery, tasks]);
 
   // Filtrar tarefas localmente por cor se um filtro estiver ativo
   const displayedTasks = selectedColorId !== null
-    ? tasks.filter(task => task.color_id === selectedColorId)
+    ? filteredResults
     : tasks;
 
   // Handler para paginação
@@ -72,26 +78,26 @@ export default function TasksPageContent() {
       <AnimatedTransition show type="fade" duration={300}>
         <div className={styles.container}>
           <div className={styles.filters}>
-            <ColorFilterSelector 
-              colors={colors} 
+            <ColorFilterSelector
+              colors={colors}
               selectedColorId={selectedColorId}
               onChange={handleColorFilter}
             />
           </div>
-          
-          <TaskGrid 
-            tasks={displayedTasks} 
-            title={searchQuery 
-              ? `Resultados para "${searchQuery}"${selectedColorId !== null ? ' (filtrado por cor)' : ''}` 
-              : selectedColorId !== null 
-                ? "Tarefas filtradas por cor" 
+
+          <TaskGrid
+            tasks={displayedTasks}
+            title={searchQuery
+              ? `Resultados para "${searchQuery}"${selectedColorId !== null ? ' (filtrado por cor)' : ''}`
+              : selectedColorId !== null
+                ? "Tarefas filtradas por cor"
                 : "Minhas Tarefas"
-            } 
+            }
             showCreateButton={true}
           />
 
           {totalPages > 1 && !selectedColorId && (
-            <Pagination 
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}

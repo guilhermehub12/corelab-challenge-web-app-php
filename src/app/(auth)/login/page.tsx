@@ -8,6 +8,17 @@ import { useNotification } from '@/hooks/useNotification';
 import { Button } from '@/components/ui/button/Button';
 import { Input } from '@/components/ui/input/Input';
 import styles from './Login.module.scss';
+import { ApiError } from '@/types/api';
+
+const createApiError = (err: unknown): ApiError => {
+  if (err && typeof err === 'object' && 'message' in err) {
+    return err as ApiError;
+  }
+  return { 
+    message: err instanceof Error ? err.message : 'Ocorreu um erro desconhecido',
+    errors: {} 
+  };
+};
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -47,19 +58,20 @@ export default function LoginPage() {
       await login(email, password);
       notification.success('Login realizado com sucesso!');
       router.push('/tasks');
-    } catch (error: any) {
-      notification.error(error);
+    } catch (error: unknown) {
+      const apiError = createApiError(error);
+      notification.error(apiError);
 
       // Checar erros específicos
-      if (error.errors) {
+      if (apiError.errors) {
         const fieldErrors: { email?: string; password?: string } = {};
 
-        if (error.errors.email) {
-          fieldErrors.email = error.errors.email[0];
+        if (apiError.errors.email) {
+          fieldErrors.email = apiError.errors.email[0];
         }
 
-        if (error.errors.password) {
-          fieldErrors.password = error.errors.password[0];
+        if (apiError.errors.password) {
+          fieldErrors.password = apiError.errors.password[0];
         }
 
         setErrors(fieldErrors);

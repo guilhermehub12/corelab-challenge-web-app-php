@@ -8,6 +8,17 @@ import { useNotification } from '@/hooks/useNotification';
 import { Button } from '@/components/ui/button/Button';
 import { Input } from '@/components/ui/input/Input';
 import styles from './Register.module.scss';
+import { ApiError } from '@/types/api';
+
+const createApiError = (err: unknown): ApiError => {
+  if (err && typeof err === 'object' && 'message' in err) {
+    return err as ApiError;
+  }
+  return { 
+    message: err instanceof Error ? err.message : 'Ocorreu um erro desconhecido',
+    errors: {} 
+  };
+};
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -71,11 +82,12 @@ export default function RegisterPage() {
       await register(name, email, password, passwordConfirmation);
       notification.success('Registro realizado com sucesso!');
       router.push('/tasks');
-    } catch (error: any) {
-      notification.error(error);
+    } catch (error: unknown) {
+      const apiError = createApiError(error);
+      notification.error(apiError);
       
       // Checar erros específicos
-      if (error.errors) {
+      if (apiError.errors) {
         const fieldErrors: {
           name?: string;
           email?: string;
@@ -83,20 +95,20 @@ export default function RegisterPage() {
           password_confirmation?: string;
         } = {};
         
-        if (error.errors.name) {
-          fieldErrors.name = error.errors.name[0];
+        if (apiError.errors.name) {
+          fieldErrors.name = apiError.errors.name[0];
         }
         
-        if (error.errors.email) {
-          fieldErrors.email = error.errors.email[0];
+        if (apiError.errors.email) {
+          fieldErrors.email = apiError.errors.email[0];
         }
         
-        if (error.errors.password) {
-          fieldErrors.password = error.errors.password[0];
+        if (apiError.errors.password) {
+          fieldErrors.password = apiError.errors.password[0];
         }
         
-        if (error.errors.password_confirmation) {
-          fieldErrors.password_confirmation = error.errors.password_confirmation[0];
+        if (apiError.errors.password_confirmation) {
+          fieldErrors.password_confirmation = apiError.errors.password_confirmation[0];
         }
         
         setErrors(fieldErrors);
