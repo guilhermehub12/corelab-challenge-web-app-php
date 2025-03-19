@@ -53,3 +53,12 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.searchingIndicator {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0.25rem;
+  font-style: italic;
+}

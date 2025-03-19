@@ -54,7 +54,7 @@ export const TaskCardComponent  = ({
           <button 
             className={styles.menuButton}
             onClick={toggleMenu}
-            aria-label="Task menu"
+            aria-label="Menu de tarefas"
           >
             <DotsIcon />
           </button>

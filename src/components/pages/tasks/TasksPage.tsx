@@ -56,10 +56,17 @@ const TasksPage = () => {
     <MainLayout onSearch={handleSearch}>
       <AnimatedTransition show type="fade" duration={300}>
         <div className={styles.container}>
+        {isSearching && (
+            <div className={styles.searchingIndicator}>
+              Buscando tarefas...
+            </div>
+          )}
+
           <TaskGrid 
             tasks={tasks} 
             title={searchQuery ? `Resultados para "${searchQuery}"` : "Minhas Tarefas"} 
             showCreateButton={true}
+            isLoading={loading || isSearching} 
           />
 
           {/* Paginação */}

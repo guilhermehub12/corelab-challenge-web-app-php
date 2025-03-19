@@ -15,12 +15,14 @@ interface TaskGridProps {
   tasks: Task[];
   title?: string;
   showCreateButton?: boolean;
+  isLoading?: boolean;
 }
 
 export const TaskGrid = ({
   tasks,
   title = 'Tarefas',
-  showCreateButton = true
+  showCreateButton = true,
+  isLoading = false
 }: TaskGridProps) => {
   const { colors, createTask, updateTask, deleteTask, toggleFavorite } = useTasks();
   const notification = useNotification();
@@ -113,7 +115,7 @@ export const TaskGrid = ({
     updateState({ selectedTask: task });
     deleteModal.open();
   }, [tasks, deleteModal, updateState]);
-
+  console.log(tasks);
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -123,13 +125,19 @@ export const TaskGrid = ({
           <button
             className={styles.createButton}
             onClick={() => createModal.open()}
+            disabled={isLoading}
           >
             <PlusIcon /> Nova Tarefa
           </button>
         )}
       </div>
 
-      {tasks.length === 0 ? (
+      {isLoading && tasks.length === 0 ? (
+        <div className={styles.loadingState}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Carregando tarefas...</p>
+        </div>
+      ) : tasks.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
             <EmptyIcon />
@@ -141,6 +149,7 @@ export const TaskGrid = ({
             <button
               className={styles.createEmptyButton}
               onClick={() => createModal.open()}
+              disabled={isLoading}
             >
               Criar Nova Tarefa
             </button>
@@ -155,11 +164,17 @@ export const TaskGrid = ({
                 onEdit={openEditModal}
                 onDelete={(taskId) => openDeleteModal(taskId)}
                 onToggleFavorite={handleToggleFavorite}
-                // onColorChange={handleColorChange}
+              // onColorChange={handleColorChange}
               />
             </div>
           ))}
+          {isLoading && tasks.length > 0 && (
+            <div className={styles.overlayLoading}>
+              <div className={styles.loadingSpinner}></div>
+            </div>
+          )}
         </div>
+
       )}
 
       {/* Modal de Criação */}
