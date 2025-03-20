@@ -36,6 +36,16 @@
   border: 1px solid rgba(var(--text-primary-rgb), 0.1);
 }
 
+@each $name, $color in $task-colors {
+  .color--#{$name} {
+    background-color: $color;
+  }
+  
+  .colorOption--#{$name} {
+    background-color: $color;
+  }
+}
+
 .clearButton {
   margin-left: $spacing-sm;
   width: 16px;

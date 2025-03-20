@@ -21,16 +21,16 @@ $color-grey: #757575;
 // Paleta de cores para tarefas
 $task-colors: (
   white: $color-white,
-  blue: $color-primary,
-  yellow: $color-yellow,
-  green: $color-green,
-  red: $color-red,
-  purple: $color-purple,
-  orange: $color-orange,
-  cyan: $color-cyan,
-  pink: $color-pink,
-  teal: $color-teal,
-  grey: $color-grey,
+  azul: $color-primary,
+  amarelo: $color-yellow,
+  verde: $color-green,
+  vermelho: $color-red,
+  roxo: $color-purple,
+  laranja: $color-orange,
+  ciano: $color-cyan,
+  rosa: $color-pink,
+  verde-água: $color-teal,
+  cinza: $color-grey,
 );
 
 // Cores base
@@ -66,21 +66,6 @@ $color-danger-dark: color.adjust($color-danger, $lightness: -15%);
 $color-info: #00bcd4;
 $color-info-light: color.adjust($color-info, $lightness: 15%);
 $color-info-dark: color.adjust($color-info, $lightness: -15%);
-
-// Cores para tarefas
-$task-colors: (
-  white: $color-white,
-  blue: $color-primary,
-  yellow: $color-warning,
-  green: $color-success,
-  red: $color-danger,
-  purple: #9c27b0,
-  orange: #ff7043,
-  cyan: $color-info,
-  pink: #e91e63,
-  teal: #26a69a,
-  grey: $color-grey-600,
-);
 
 // ============================================
 // TIPOGRAFIA

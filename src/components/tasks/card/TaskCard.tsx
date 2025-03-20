@@ -86,7 +86,7 @@ export const TaskCardComponent  = ({
       </div>
       
       <div className={styles.content}>
-        <p>{task.content}</p>
+        <p>{task.description}</p>
       </div>
       
       <div className={styles.footer}>
@@ -104,7 +104,7 @@ export const TaskCard = memo(TaskCardComponent, (prevProps, nextProps) => {
   return (
     prevProps.task.id === nextProps.task.id &&
     prevProps.task.title === nextProps.task.title &&
-    prevProps.task.content === nextProps.task.content &&
+    prevProps.task.description === nextProps.task.description &&
     prevProps.task.color_id === nextProps.task.color_id &&
     prevProps.task.is_favorited === nextProps.task.is_favorited
   );

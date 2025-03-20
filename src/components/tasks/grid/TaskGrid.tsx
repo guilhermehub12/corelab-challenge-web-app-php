@@ -39,10 +39,10 @@ export const TaskGrid = ({
   });
 
   // Handlers para manipulação de tarefas
-  const handleCreateTask = useCallback(async (title: string, content: string, colorId: number) => {
+  const handleCreateTask = useCallback(async (title: string, description: string, colorId: number) => {
     updateState({ isSubmitting: true });
     try {
-      await createTask(title, content, colorId);
+      await createTask(title, description, colorId);
       notification.success('Tarefa criada com sucesso!');
       createModal.close();
     } catch {
@@ -52,12 +52,12 @@ export const TaskGrid = ({
     }
   }, [createTask, notification, createModal, updateState]);
 
-  const handleEditTask = useCallback(async (title: string, content: string, colorId: number) => {
+  const handleEditTask = useCallback(async (title: string, description: string, colorId: number) => {
     if (!uiState.selectedTask) return;
 
     updateState({ isSubmitting: true });
     try {
-      await updateTask(uiState.selectedTask.id, title, content, colorId);
+      await updateTask(uiState.selectedTask.id, title, description, colorId);
       notification.success('Tarefa atualizada com sucesso!');
       editModal.close();
     } catch {

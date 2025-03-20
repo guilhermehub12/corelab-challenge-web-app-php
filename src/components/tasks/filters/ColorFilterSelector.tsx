@@ -18,21 +18,21 @@ export const ColorFilterSelector = ({
 }: ColorFilterSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { state: uiState } = useUI();
-  
+
   const handleToggle = () => {
     setIsOpen(prev => !prev);
   };
-  
+
   const handleColorSelect = (colorId: number) => {
     onChange(selectedColorId === colorId ? null : colorId);
     setIsOpen(false);
   };
-  
+
   const handleClearFilter = () => {
     onChange(null);
     setIsOpen(false);
   };
-  
+
   // Obter a cor selecionada
   const selectedColor = selectedColorId !== null
     ? colors.find(color => color.id === selectedColorId)
@@ -43,14 +43,16 @@ export const ColorFilterSelector = ({
       <button 
         className={styles.filterButton}
         onClick={handleToggle}
-        aria-expanded={isOpen}
+        data-expanded={isOpen ? "true" : "false"}
         aria-haspopup="true"
       >
         {selectedColor ? (
           <>
-            <span 
-              className={styles.colorIndicator} 
-              style={{ backgroundColor: selectedColor.hex_code }}
+            <span
+              className={`${styles.colorIndicator} 
+                        ${styles[`color--${selectedColor?.name.toLowerCase()}`]}
+                `} 
+              data-color={selectedColor.hex_code}
             />
             <span>Filtrado por {selectedColor.name}</span>
             <span className={styles.clearButton} onClick={(e) => {
@@ -67,12 +69,12 @@ export const ColorFilterSelector = ({
           </>
         )}
       </button>
-      
+
       {isOpen && (
         <div className={`${styles.dropdown} ${uiState.theme === 'dark' ? styles.dark : ''}`}>
           <div className={styles.dropdownHeader}>
             <span>Selecione uma cor</span>
-            <button 
+            <button
               className={styles.closeButton}
               onClick={() => setIsOpen(false)}
               aria-label="Fechar seletor de cores"
@@ -80,22 +82,23 @@ export const ColorFilterSelector = ({
               ✕
             </button>
           </div>
-          
+
           <div className={styles.colorGrid}>
             {colors.map(color => (
               <button
                 key={color.id}
-                className={`${styles.colorOption} ${selectedColorId === color.id ? styles.selected : ''}`}
-                style={{ backgroundColor: color.hex_code }}
+                className={`${styles.colorOption} ${styles[`colorOption--${color.name.toLowerCase()}`]} ${selectedColorId === color.id ? styles.selected : ''}`}
+                data-color={color.hex_code}
                 onClick={() => handleColorSelect(color.id)}
                 aria-label={`Filtrar por cor ${color.name}`}
-                aria-selected={selectedColorId === color.id}
+                data-selected={selectedColorId === color.id}
               />
             ))}
           </div>
           
+
           {selectedColorId !== null && (
-            <button 
+            <button
               className={styles.clearFilterButton}
               onClick={handleClearFilter}
             >

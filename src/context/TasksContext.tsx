@@ -149,8 +149,8 @@ interface TasksContextType {
   // Actions
   fetchTasks: (page?: number, search?: string, forceRefresh?: boolean) => Promise<void>;
   fetchFavorites: (forceRefresh?: boolean) => Promise<void>;
-  createTask: (title: string, content: string, colorId?: number) => Promise<Task>;
-  updateTask: (id: number, title?: string, content?: string, colorId?: number) => Promise<Task>;
+  createTask: (title: string, description: string, colorId?: number) => Promise<Task>;
+  updateTask: (id: number, title?: string, description?: string, colorId?: number) => Promise<Task>;
   deleteTask: (id: number) => Promise<void>;
   toggleFavorite: (id: number) => Promise<boolean>;
   changeColor: (id: number, colorId: number) => Promise<Task>;
@@ -290,12 +290,12 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
   }, [state.favorites.length, isCacheValid]);
 
   // Criar tarefa
-  const createTask = useCallback(async (title: string, content: string, colorId?: number): Promise<Task> => {
+  const createTask = useCallback(async (title: string, description: string, colorId?: number): Promise<Task> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
-      const response = await tasksService.createTask({ title, content, color_id: colorId });
+      const response = await tasksService.createTask({ title, description, color_id: colorId });
       const newTask = response.data;
 
       dispatch({ type: 'ADD_TASK', payload: newTask });
@@ -312,12 +312,12 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Atualizar tarefa
-  const updateTask = useCallback(async (id: number, title?: string, content?: string, colorId?: number): Promise<Task> => {
+  const updateTask = useCallback(async (id: number, title?: string, description?: string, colorId?: number): Promise<Task> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
-      const response = await tasksService.updateTask(id, { title, content, color_id: colorId });
+      const response = await tasksService.updateTask(id, { title, description, color_id: colorId });
       const updatedTask = response.data;
 
       dispatch({ type: 'UPDATE_TASK', payload: updatedTask });

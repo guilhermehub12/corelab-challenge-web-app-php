@@ -11,7 +11,7 @@ import styles from './TaskForm.module.scss';
 
 interface TaskFormValues {
   title: string;
-  content: string;
+  description: string;
   colorId: number;
   [key: string]: unknown;
 }
@@ -20,7 +20,7 @@ interface TaskFormProps {
   task?: Task;
   colors: TaskColor[];
   isLoading: boolean;
-  onSubmit: (title: string, content: string, colorId: number) => void;
+  onSubmit: (title: string, description: string, colorId: number) => void;
   onCancel: () => void;
 }
 
@@ -41,7 +41,7 @@ export const TaskForm = ({
       required: 'O título é obrigatório',
       maxLength: { value: 100, message: 'O título não pode ter mais de 100 caracteres' }
     },
-    content: {
+    description: {
       required: 'O conteúdo é obrigatório',
     },
     colorId: {
@@ -58,12 +58,12 @@ export const TaskForm = ({
   const form = useForm<TaskFormValues>({
     initialValues: {
       title: task?.title || '',
-      content: task?.content || '',
+      description: task?.description || '',
       colorId: task?.color_id || defaultColorId,
     },
     validate: validator,
     onSubmit: (values) => {
-      onSubmit(values.title, values.content, values.colorId);
+      onSubmit(values.title, values.description, values.colorId);
     }
   });
 
@@ -72,7 +72,7 @@ export const TaskForm = ({
     if (task) {
       form.setValues({
         title: task.title,
-        content: task.content,
+        description: task.description,
         colorId: task.color_id,
       });
     }
@@ -107,16 +107,16 @@ export const TaskForm = ({
       <div className={styles.formGroup}>
         <label className={styles.label}>
           Conteúdo
-          {form.touched.content && form.errors.content && (
-            <span className={styles.error}>{form.errors.content}</span>
+          {form.touched.description && form.errors.description && (
+            <span className={styles.error}>{form.errors.description}</span>
           )}
         </label>
         <textarea
-          name="content"
-          className={`${styles.textarea} ${form.touched.content && form.errors.content ? styles.hasError : ''
+          name="description"
+          className={`${styles.textarea} ${form.touched.description && form.errors.description ? styles.hasError : ''
             }`}
           placeholder="Conteúdo da tarefa"
-          value={form.values.content}
+          value={form.values.description}
           onChange={form.handleChange}
           onBlur={form.handleBlur}
           rows={5}

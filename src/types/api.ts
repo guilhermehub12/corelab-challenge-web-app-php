@@ -12,7 +12,7 @@ export interface User {
   export interface Task {
     id: number;
     title: string;
-    content: string;
+    description: string;
     color_id: number;
     color: TaskColor;
     is_favorited: boolean;
@@ -69,13 +69,13 @@ export interface User {
   
   export interface CreateTaskRequest {
     title: string;
-    content: string;
+    description: string;
     color_id?: number;
   }
   
   export interface UpdateTaskRequest {
     title?: string;
-    content?: string;
+    description?: string;
     color_id?: number;
   }
 
