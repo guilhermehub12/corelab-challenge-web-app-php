@@ -32,7 +32,6 @@ axiosInstance.interceptors.request.use(
     // Adicionar token de autenticação do usuário apenas se existir
     if (typeof window !== "undefined") {
       const token = getCookie("token");
-      console.log("Token enviado na requisição:", token);
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }

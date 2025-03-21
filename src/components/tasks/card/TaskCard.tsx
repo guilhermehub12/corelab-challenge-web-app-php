@@ -4,6 +4,7 @@ import { memo, useEffect, useState } from 'react';
 import { Task } from '@/types/api';
 import { formatDate } from '@/utils/dateUtils';
 import styles from './TaskCard.module.scss';
+import { useTasks } from '@/context/TasksContext';
 
 interface TaskCardProps {
   task: Task;
@@ -18,6 +19,9 @@ export const TaskCardComponent  = ({
   onDelete, 
   onToggleFavorite
 }: TaskCardProps) => {
+  const { colors, changeColor } = useTasks();
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFavorited, setIsFavorited] = useState(task.is_favorited);
 
@@ -33,6 +37,20 @@ export const TaskCardComponent  = ({
     setIsFavorited(!isFavorited);
     onToggleFavorite(task.id);
   };
+
+  const handleChangeColor = async (colorId: number) => {
+    try {
+      await changeColor(task.id, colorId);
+      // Aqui você pode adicionar notificações de sucesso, se desejar
+    } catch (error) {
+      console.error('Erro ao alterar cor:', error);
+      // Notificação de erro, se necessário
+    }
+    setIsColorPickerOpen(false);
+    setIsMenuOpen(false);
+  };
+
+
 
   return (
     <div 
@@ -80,8 +98,32 @@ export const TaskCardComponent  = ({
               >
                 <TrashIcon /> Excluir
               </button>
+
+              <button 
+                className={styles.menuItem}
+                onClick={() => setIsColorPickerOpen(prev => !prev)}
+              >
+                <ColorIcon /> Cor
+              </button>
             </div>
           )}
+
+{isColorPickerOpen && (
+            <div className={styles.colorPicker}>
+              {colors.map(color => (
+                <button 
+                  key={color.id}
+                  className={styles.colorOption}
+                  style={{ backgroundColor: color.hex_code }}
+                  onClick={() => handleChangeColor(color.id)}
+                  title={`Cor ${color.name}`}
+                >
+                  {task.color_id === color.id ? '✓' : ''}
+                </button>
+              ))}
+            </div>
+          )}
+
         </div>
       </div>
       
@@ -136,5 +178,16 @@ const TrashIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="3 6 5 6 21 6"></polyline>
     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+  </svg>
+);
+
+const ColorIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+    <circle cx="8" cy="8" r="1.5" />
+    <circle cx="12" cy="6" r="1.5" />
+    <circle cx="16" cy="8" r="1.5" />
+    <circle cx="8" cy="16" r="1.5" />
+    <circle cx="12" cy="18" r="1.5" />
   </svg>
 );

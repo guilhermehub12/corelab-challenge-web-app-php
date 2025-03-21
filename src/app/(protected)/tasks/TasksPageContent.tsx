@@ -54,8 +54,6 @@ export default function TasksPageContent() {
     if (colorId !== null) {
       const filteredTasks = tasks.filter(task => task.color_id === colorId);
       setFilteredResults(filteredTasks);
-      console.log('Id da cor: ' + colorId);
-      console.log('tarefas: ' + filteredTasks);
     } else {
       // Se nenhuma cor estiver selecionada, recarregar todas as tarefas
       setFilteredResults([]);

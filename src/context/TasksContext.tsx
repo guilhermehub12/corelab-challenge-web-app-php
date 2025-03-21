@@ -179,7 +179,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('taskColors', JSON.stringify(data));
       } catch (err: unknown) {
         
-        console.error('Error loading colors (debug em loadColors no TasksContext):', err);
+        console.error('Erro carregando cores:', err);
         // Tentar carregar do localStorage
         const cachedColors = localStorage.getItem('taskColors');
         if (cachedColors) {
@@ -249,7 +249,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
           });
           dispatch({ type: 'SET_SEARCH_QUERY', payload: cachedData.searchQuery });
         } catch (e) {
-          console.error('Error parsing cached tasks:', e);
+          console.error('Erro analisando tarefas em cache:', e);
         }
       }
     } finally {
@@ -274,7 +274,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         timestamp: Date.now()
       }));
     } catch (err: unknown) {
-      console.error('Error loading favorites:', err);
+      console.error('Erro carregando os favoritos:', err);
 
       // Tentar carregar do localStorage em caso de erro
       const cachedFavoritesJSON = localStorage.getItem('cachedFavorites');
@@ -283,7 +283,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
           const cachedData = JSON.parse(cachedFavoritesJSON);
           dispatch({ type: 'SET_FAVORITES', payload: cachedData.favorites });
         } catch (e) {
-          console.error('Error parsing cached favorites:', e);
+          console.error('Erro analisando os favoritos em cache:', e);
         }
       }
     }
@@ -376,7 +376,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
 
       return data;
     } catch (err: unknown) {
-      console.error('Error changing color:', err);
+      console.error('Erro alterando a cor:', err);
       throw err;
     }
   }, []);

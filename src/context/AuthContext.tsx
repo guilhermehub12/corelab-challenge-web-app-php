@@ -40,7 +40,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         // Verificar se existe um token no cookie
         const token = getCookie('token');
-        console.log("Token encontrado:", token);
         if (token) {
           const { data } = await authService.getCurrentUser();
           setUser(data);
@@ -63,7 +62,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const response = await authService.login({ email, password });
-      console.log("Token recebido:", response.token);
       // Salvar token no cookie (7 dias)
       setCookie('token', response.token, { maxAge: 60 * 60 * 24 * 7 });
       

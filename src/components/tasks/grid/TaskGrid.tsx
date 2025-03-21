@@ -115,7 +115,7 @@ export const TaskGrid = ({
     updateState({ selectedTask: task });
     deleteModal.open();
   }, [tasks, deleteModal, updateState]);
-  console.log(tasks);
+  
   return (
     <div className={styles.container}>
       <div className={styles.header}>
