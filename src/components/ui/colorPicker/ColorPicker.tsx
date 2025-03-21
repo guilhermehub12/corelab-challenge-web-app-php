@@ -29,7 +29,7 @@ export const ColorPicker = ({ colors, selectedColorId, onChange }: ColorPickerPr
           backgroundColor: selectedColor ? selectedColor.hex_code : '#FFFFFF',
           border: selectedColor ? 'none' : '1px solid #ccc'
         }}
-        aria-label="Select color"
+        aria-label="Selecione a cor"
         type="button"
       />
       
@@ -41,7 +41,7 @@ export const ColorPicker = ({ colors, selectedColorId, onChange }: ColorPickerPr
               className={`${styles.colorOption} ${color.id === selectedColorId ? styles.active : ''}`}
               style={{ backgroundColor: color.hex_code }}
               onClick={() => handleColorSelect(color.id)}
-              aria-label={`Color ${color.name}`}
+              aria-label={`Cor ${color.name}`}
               type="button"
             />
           ))}

@@ -41,10 +41,11 @@ export const TaskCardComponent  = ({
   const handleChangeColor = async (colorId: number) => {
     try {
       await changeColor(task.id, colorId);
-      // Aqui você pode adicionar notificações de sucesso, se desejar
+      console.log('teste')
+      // TODO adicionar notificações de sucesso
     } catch (error) {
       console.error('Erro ao alterar cor:', error);
-      // Notificação de erro, se necessário
+      // TODO Notificação de erro
     }
     setIsColorPickerOpen(false);
     setIsMenuOpen(false);

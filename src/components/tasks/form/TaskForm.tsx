@@ -82,15 +82,7 @@ export const TaskForm = ({
     <form className={styles.form} onSubmit={form.handleSubmit}>
       <div className={styles.header}>
         <h2>{task ? 'Editar Tarefa' : 'Nova Tarefa'}</h2>
-        <div className={styles.colorPickerContainer}>
-          <ColorPicker
-            colors={colors}
-            selectedColorId={form.values.colorId}
-            onChange={(colorId) => form.setFieldValue('colorId', colorId)}
-          />
-        </div>
       </div>
-
       <div className={styles.formGroup}>
         <Input
           label="Título"
@@ -122,7 +114,18 @@ export const TaskForm = ({
           rows={5}
         />
       </div>
-
+      <div className={styles.formGroup}>
+        <label className={styles.label}>
+          Cor
+        </label>
+        <div className={styles.colorPickerContainer}>
+          <ColorPicker
+            colors={colors}
+            selectedColorId={form.values.colorId}
+            onChange={(colorId) => form.setFieldValue('colorId', colorId)}
+          />
+        </div>
+      </div>
       <div className={styles.actions}>
         <Button
           type="button"
